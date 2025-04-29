@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "algorithms"
+version = "1.0.0a1"
+authors = [
+  {name = "Krzysztof Barczak", email = "krz.barczak@gmail.com"},
+
+]
+description = "Implementations of common algorithms"
+readme = "README.md"
+requires-python = ">=3.13"
+keywords = ["algorithm", "sorting"]
+classifiers = [
+    "Private :: Do Not Upload", # prevents uploading to pypi
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+
+[projects.urls]
+Homepage = "https://github.com/poteznyziomek"
+
+[project.scripts]
+algorithms = "algorithms.cli:hello"
