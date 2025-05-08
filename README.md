@@ -48,38 +48,53 @@ The following pseudocode and analysis of this algorithm are from the Cormen book
 Let us assume that in the previous pseudocode each statement 1., 2., ..., 8. has a time *cost* equal to $c_1$, $c_2$, ..., $c_8$, where each $c_k$, $k = 1, \dots, 8$ is constant. Moreover let $t_i$, $i = 2, \dots, n$ denote the number of times the `while` statement in line 5, i.e. `while j > 0 and A[j] > key` is executed for that value of $i$. This means that $t = t_i$ is a function of $i$, i.e. $t: \{2, \dots, n\} \to \{1, \dots, n\}$.
 
 Let $\{W_i(j)\}_{i=2}^n$ be a sequence of boolean functions, i.e. ${W_i : \{0, \dots, i-1\} \to \{\top, \bot\}}$,
+
 $$
     W_i(j) \equiv j > 0 \wedge A[j] > \mathrm{key}
 $$
+
 for each $i = 2, \dots, n$. Now fix $i$ and we have a sequence
+
 $$
     (W_i(0), W_i(1), \dots, W_i(i-2), W_i(i-1)),
 $$
+
 but during the algorithm execution the elements of the above sequence are evaluated in reverse order (in step 4. we set $j = i-1$ and later in step 7. we decrease it $j = j-1$):
+
 $$
     (W_i(i-1), W_i(i-2), \dots, W_i(1), W_i(0)).
 $$
+
 Now note that in the above sequence, if for say $j_0 \in \{0, \dots, i-1\}$ we have $W_i(j_0) = \bot$, then:
+
 $$
     W_i(j_0) = W_i(j_0-1) = \dots = W_i(0) = \bot,
 $$
+
 but
+
 $$
     W_i(i-1) = W_i(i-2) = \dots = W_i(j_0+1) = \top.
 $$
+
 So for a fixed $i$ $t_i$ is equal to the number of $\top$ in the sequence plus one (we take into account the first $j$ such that $W_i(j) = \bot$):
+
 $$
     t_i = \mathrm{card}\{j \in \{0, \dots, i-1\} : W_i(j) = \top\} + 1 = \mathrm{card}W_i^{-1}[\{\top\}] + 1.
 $$
 
 If $i = 2$ then the cost of executing the `while` in line 5 if $c_5 t_2$; if $i = 3$ then the cost is equal to $c_5 t_3$. So the total cost after all iterations of $i$ is equal:
+
 $$
     c_5 t_2 + c_5 t_3 + \dots + c_5 t_n = c_5 \sum_{i=2}^n t_i.
 $$
+
 Similarly the statement in line 6 is executed $t_i - 1$ times for each fixed $i$. We subtract $1$, because if the test in the `while` statement evaluates to $\bot$, then the algorithm does not enter the body of the loop. The corresponding cost of the execution of line 6 is equal to $c_6(t_i - 1)$. Summing over all values of $i$ yields:
+
 $$
     c_6 (t_2 - 1) + c_6 (t_3 - 1) + \dots + c_6 (t_n - 1) = c_6 \sum_{i=2}^n (t_i - 1).
 $$
+
 The explenation for line 7 is similar to line 6.
 
 
@@ -98,24 +113,32 @@ $$
     T(n) = c_1n + c_2(n - 1) + c_4(n - 1) + c_5\sum_{i=2}^nt_i + \\ + c_6\sum_{i=2}^n(t_i - 1) + c_7\sum_{i=2}^n(t_i - 1) + c_8(n - 1).
 $$
 
-The best case scenario would be if 
+The best case scenario would be if
+
 $$
     (\forall i \in \{2, \dots, n\})(\forall j \in \{0, \dots, i-1\}) : W_i(j) = \bot,
 $$
+
 meaning that the `while` test always evaluates to $\bot$ and thus $t_i =1$ for each $i = 2, \dots, n$. Plugging $t_i = 1$ into the formulat for $T(n)$ gives:
+
 $$
     T(n) = c_1n + c_2(n - 1) + c_4(n - 1) + c_5(n - 1) + c_8(n - 1) = \\ = (c_1 + c_2 + c_4 + c_8)n + (-c_2 - c_4 - c_5 - c_8).
 $$
+
 Putting $a = c_1 + c_2 + c_4 + c_8$ and $b = -c_2 - c_4 - c_5 - c_8$ we see that the best case running time is **linear** in $n$:
+
 $$
     T(n) = an + b.
 $$
 
 The worst case would be when the `while` statement was executed maximum amount of times. Note that:
+
 $$
     W_i(0) = \bot
 $$
+
 for all $i \in \{2, \dots, n\}$. Thus the worst case is achieved when:
+
 $$
     W_i(j) = 
         \begin{cases}
@@ -126,22 +149,28 @@ $$
 
 > **Note**
 >
-> Since the array are $1$-based the functions $W_i$ are not well-defined. In particular $A[0]$ is not defined. We abuse the fact that the boolean operator `and` and `or` are **short circuiting**, so that in our situation when $0 > 0$ evaluates to $\bot$ the expression $A[0] > \mathrm{key}$ is not evaluated. To avoid the abuse we could extend the definition of $W_i$ like so (assuming $W_i(0)$ is not defined for all $i \in \{2, \dots, n\}$):
+> Since the array are $1$-based the functions $W_i$ are not well-defined. In particular $A[0]$ is not defined. We abuse the fact that the boolean operators `and` and `or` are **short circuiting**, so that in our situation when $0 > 0$ evaluates to $\bot$ the expression $A[0] > \mathrm{key}$ is not evaluated. To avoid the abuse we could extend the definition of $W_i$ like so (assuming $W_i(0)$ is not defined for all $i \in \{2, \dots, n\}$):
+> 
 > $$
     W'_i : \{0, \dots, i - 1\} \to \{\top, \bot\},\\[2ex]
     W'_i(0) = \bot,\\[2ex]
     W'_i \restriction \{1, \dots, n\} = W_i
 > $$
+> 
 > for all $i \in \{2, \dots, n\}$. The $\{W'_i\}_{i=2}^n$ functions are the desired extensions.
 
 In the worst case we have:
+
 $$
     t_i = \mathrm{card}W_i^{-1}[\{\top\}] + 1 = (i - 1) + 1 = i
 $$
+
 for all $i \in \{2, \dots, n\}$. Plugging $t_i = i$ in the formula for $T(n)$ we obtain:
+
 $$
     T(n) = (c_1 + c_2 + c_4 + c_8)n + (-c_2 - c_4 - c_8) + \\[2ex] + c_5\frac{(2 + n)(n - 1)}{2} + (c_6 + c_7)\frac{(1 + n - 1)(n - 1)}{2} = \\[2ex] = \frac{1}{2}(c_5 + c_6 + c_7)n^2 + \frac{1}{2}(2c_1 + 2c_2 + 2c_4 + c_5 - c_6 - c_7 + 2c_8)n + \\[2ex] + (-c_2 - c_4 - c_5 - c_8).
 $$
+
 Thus worst case running time is quadratic in $n$: $T(n) = an^2 + bn + c$ for some $a,b,c$, $a\not=0$.
 
 ### Selection sort
@@ -174,21 +203,27 @@ Thus worst case running time is quadratic in $n$: $T(n) = an^2 + bn + c$ for som
 |         10       | $c_{10}$ |            $n - 1$               |
 
 Let $\{W_i\}_{i=1}^{n-1}$ be a sequence of boolean functions ${W_i : \{i+1, \dots, n\} \to \{\top, \bot\}}$, $W_i(j) \equiv A[i] > A[j]$. Then for each $i \in \{i, \dots, n-1\}$ let $t_i$ denote the number of times the test in the `if` statement in line 5 evaluates to $\top$, i.e.:
+
 $$
     t_i = \mathrm{card}W_i^{-1}[\{\top\}].
 $$
 
 The best case scenario is when $t_i = 0$ for all $i \in \{1, \dots, n-1\}$. Then the running time is:
+
 $$
     T(n) = c_1 n + (c_2 + c_4 + c_8 + c_9 + c_{10})(n - 1) + \\[2ex] + (c_4 + c_5) \sum_{i=1}^{n-1} (n - i) = \\[2ex] = \frac{1}{2}(c_4 + c_5)n^2 + (c_1 + c_2 + \frac{c_4}{2} - \frac{c_5}{2} + c_8 + c_9 + c_{10})n + \\[2ex] - (c_2 + c_4 + c_8 + c_9 + c_{10}).
 $$
+
 Thus in the best case scenario the running time $T(n)$ is quadratic in $n$.
 
 The worst case scenario would be when $W_i(j) = \top$ for all $j \in \{i+1, \dots, n\}$. That is, when each `if` evaluates to $\top$ every time. We have:
+
 $$
     t_i = \mathrm{card}W_i^{-1}[\{\top\}] = \mathrm{card}\text{ }\mathrm{dom}W_i = n - (i + 1) + 1 = n - i
 $$
+
 for all $i \in \{i, \dots, n-1\}$. The formula for running time is similar, we just need to adjust for $c_6$:
+
 $$
     T(n) = \frac{1}{2} (c_4 + c_5 + c_6)n^2 + (c_1 + c_2 + \frac{c_4}{2} - \frac{c_5}{2} - \frac{c_6}{2} + c_8 + c_9 + c_{10})n + \\[2ex] - (c_2 + c_4 + c_8 + c_9 + c_{10}).
 $$
