@@ -9,9 +9,11 @@ Python implementation of algorithms used to solve the classic problems of: **sor
 3. [Sorting algorithms](#sorting-algorithms)
     1. [Insertion sort](#insertion-sort)
     2. [Selection sort](#selection-sort)
-4. [Misc. algorithms](#misc-algorithms)
-5. [Next steps](#next-steps)
-6. [References](#references)
+4. [Search algorithms](#search-algorithms)
+    1. [Binary search](#binary-search)
+5. [Misc. algorithms](#misc-algorithms)
+6. [Next steps](#next-steps)
+7. [References](#references)
 
 ## Package features
 
@@ -190,6 +192,24 @@ for all $i \in \{i, \dots, n-1\}$. The formula for running time is similar, we j
 $$
     T(n) = \frac{1}{2} (c_4 + c_5 + c_6)n^2 + (c_1 + c_2 + \frac{c_4}{2} - \frac{c_5}{2} - \frac{c_6}{2} + c_8 + c_9 + c_{10})n + \\[2ex] - (c_2 + c_4 + c_8 + c_9 + c_{10}).
 $$
+
+## Search algorithms
+
+### Binary search ([Cormen](#cormen) task 2.3-6)
+
+Recall the **linear search**. For given array $A$ and value $v$ we search for the index $i$ such that $A[i] = v$. Observe that if the subarray being searched is already sorted, the searching algorithm can check the midpoint of the subarray against $v$ and eliminate half of the subarray from further consideration. The binary search algorithm repeats this procedure, halving the size of the remaining portion of the subarray each time.
+
+> ```
+> Binary-Search(v, A, a, b)
+> 1. if a > b
+> 2.    return null
+> 3. q = floor((a + b) / 2)
+> 4. if v = A[q]
+> 5.    return q
+> 6. else if v < A[q]
+> 7.    Binary-Search(v, A, a, q - 1)
+> 8. else if v > A[q]
+> 9.    Binary-Search(v, A, q + 1, b)
 
 ## Misc. algorithms
 
