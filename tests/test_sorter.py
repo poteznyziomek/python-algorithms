@@ -179,6 +179,18 @@ class NumbersClassInsertionSort(unittest.TestCase):
         self.assertListEqual(inst.a_list, correct_result)
 
 
+class NumbersClassRecursiveInsertionSort(unittest.TestCase):
+
+	def test_recursive_insertion(self):
+		'''insertion_sort_r method should sort numbers increasingly.
+		'''
+		a_list = [-3, 5, 9, 5, 4, 2, 8]
+		inst = sorter.Numbers(a_list)
+		inst.insertion_sort_r()
+		correct_result = [-3, 2, 4, 5, 5, 8, 9]
+		self.assertListEqual(inst.a_list, correct_result)
+
+
 class NumbersClassSelectionSort(unittest.TestCase):
 	
 	def test_selection(self):
@@ -221,5 +233,5 @@ class NumbersClassMerge(unittest.TestCase):
 		self.assertListEqual(a_inst.a_list, a_correct_result)
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    unittest.main(verbosity=0)
    #unittest.main()

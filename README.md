@@ -45,9 +45,9 @@ The following pseudocode and analysis of this algorithm are from the Cormen book
 > 8.    A[j + 1] = key
 > ```
 
-Let us assume that in the previous pseudocode each statement 1., 2., ..., 8. has a time *cost* equal to $c_1$, $c_2$, ..., $c_8$, where each $c_k$, $k = 1, \dots, 8$ is constant. Moreover let $t_i$, $i = 2, \dots, n$ denote the number of times the `while` statement in line 5, i.e. `while j > 0 and A[j] > key` is executed for that value of $i$. This means that $t = t_i$ is a function of $i$, i.e. $t: \{2, \dots, n\} \to \{1, \dots, n\}$.
+Let us assume that in the previous pseudocode each statement 1., 2., ..., 8. has a time *cost* equal to $c_1$, $c_2$, ..., $c_8$, where each $c_k$, $k = 1, \dots, 8$ is constant. Moreover let $t_i$, $i = 2, \dots, n$ denote the number of times the `while` statement in line 5, i.e. `while j > 0 and A[j] > key` is executed for that value of $i$. This means that $i \mapsto t(i) := t_i$ is a function of $i$, i.e. $t: \{2, \dots, n\} \to \{1, \dots, n\}$.
 
-Let $\{W_i(j)\}_{i=2}^n$ be a sequence of boolean functions, i.e. ${W_i : \{0, \dots, i-1\} \to \{\top, \bot\}}$,
+Let $\{W_i(j)\}_{i=2}^n$ be a sequence of boolean functions (or predicates if one will), i.e. ${W_i : \{0, \dots, i-1\} \to \{\top, \bot\}}$,
 
 $$
     W_i(j) \equiv j > 0 \wedge A[j] > \mathrm{key}
@@ -59,7 +59,7 @@ $$
     (W_i(0), W_i(1), \dots, W_i(i-2), W_i(i-1)),
 $$
 
-but during the algorithm execution the elements of the above sequence are evaluated in reverse order (in step 4. we set $j = i-1$ and later in step 7. we decrease it $j = j-1$):
+but during the algorithm execution the elements of the above sequence are evaluated in reverse order (in step 4. we set $j \leftarrow i-1$ and later in step 7. we decrease it $j \leftarrow j-1$):
 
 $$
     (W_i(i-1), W_i(i-2), \dots, W_i(1), W_i(0)).
@@ -71,13 +71,13 @@ $$
     W_i(j_0) = W_i(j_0-1) = \dots = W_i(0) = \bot,
 $$
 
-but
+because `A[1:i]` is sorted, so if $A[j_0] < \mathrm{key}$, then $A[j_0 - 1] < \mathrm{key}$, but
 
 $$
     W_i(i-1) = W_i(i-2) = \dots = W_i(j_0+1) = \top.
 $$
 
-So for a fixed $i$ $t_i$ is equal to the number of $\top$ in the sequence plus one (we take into account the first $j$ such that $W_i(j) = \bot$):
+So if $i$ is fixed, then $t_i$ is equal to the number of $\top$ in the sequence plus one (we take into account the first $j$ such that $W_i(j) = \bot$):
 
 $$
     t_i = \mathrm{card}\{j \in \{0, \dots, i-1\} : W_i(j) = \top\} + 1 = \mathrm{card}W_i^{-1}[\{\top\}] + 1.
@@ -149,7 +149,7 @@ $$
 
 > **Note**
 >
-> Since the array are $1$-based the functions $W_i$ are not well-defined. In particular $A[0]$ is not defined. We abuse the fact that the boolean operators `and` and `or` are **short circuiting**, so that in our situation when $0 > 0$ evaluates to $\bot$ the expression $A[0] > \mathrm{key}$ is not evaluated. To avoid the abuse we could extend the definition of $W_i$ like so (assuming $W_i(0)$ is not defined for all $i \in \{2, \dots, n\}$):
+> Since arrays are assumed to be indexed from 1 the functions $W_i$ are not well-defined. In particular $A[0]$ is not defined. We abuse the fact that the boolean operators `and` and `or` are **short circuiting**, so that in our situation when $0 > 0$ evaluates to $\bot$ the expression $A[0] > \mathrm{key}$ is not evaluated. To avoid the abuse we could extend the definition of $W_i$ like so (assuming $W_i(0)$ is not defined for all $i \in \{2, \dots, n\}$):
 > 
 > $$
     W'_i : \{0, \dots, i - 1\} \to \{\top, \bot\},\\[2ex]
@@ -157,7 +157,11 @@ $$
     W'_i \restriction \{1, \dots, n\} = W_i
 > $$
 > 
-> for all $i \in \{2, \dots, n\}$. The $\{W'_i\}_{i=2}^n$ functions are the desired extensions.
+> for all $i \in \{2, \dots, n\}$. The functions $\{W'_i\}_{i=2}^n$ are the desired extensions.
+
+> **Note**
+>
+> To be fair the functions $W_i$, $i \in \{2, \dots, n\}$ are not really the predicates $j > 0 \wedge A[j] > \mathrm{key}$ but valuations of these predicates.
 
 In the worst case we have:
 
@@ -172,6 +176,25 @@ $$
 $$
 
 Thus worst case running time is quadratic in $n$: $T(n) = an^2 + bn + c$ for some $a,b,c$, $a\not=0$.
+
+#### Recursive insertion sort
+
+Insertion sort algorithm can be thought of as a recursive algorithm: in order to sort `A[1:n]`, recursively sort the subarray `A[1:n-1]` and then insert `A[n]` into the sorted subarray `A[1:n-1]`.
+
+> ```
+> Insertion-Sort-R(A, n)
+> 1. if n < 2, then
+> 2.    return
+> 3. // recursively sort A[1:n-1]
+> 4. Insertion-Sort-R(A, n-1)
+> 5. // insert A[n-1] into the sorted array A[1:n-1]
+> 6. key = A[n-1]
+> 7. j = n - 2
+> 8. while j >= 0 and A[j] > key:
+> 9.      A[j+1] = A[j]
+> 10.     j = j - 1
+> 11. A[j+1] = key
+> ```
 
 ### Selection sort
 
@@ -258,16 +281,33 @@ Consider the problem of adding two $n$-bit binary integers $a$ and $b$, stored i
 > 2. C = C[0:n]
 > 3. memory = 0
 > 4. for i=0 to n-1
-> 5.  C[i] = ((A[i] + B[i]) % 2) + memory
-> 6.  memory = floor((A[i] + B[i] + memory) / 2)
+> 5.    C[i] = ((A[i] + B[i]) % 2) + memory
+> 6.    memory = floor((A[i] + B[i] + memory) / 2)
 > 7. C[n] = memory
 > 8. return C
 > ```
 
+| statement number |  *cost*  | *times* |
+| ---------------- | -------- | ------- |
+|         1        |   $0$    |   $1$   |
+|         2        |  $c_2$   |   $1$   |
+|         3        |  $c_3$   |   $1$   |
+|         4        |  $c_4$   | $n + 1$ |
+|         5        |  $c_5$   |   $n$   |
+|         6        |  $c_6$   |   $n$   |
+|         7        |  $c_7$   |   $1$   |
+|         8        |  $c_8$   |   $1$   |
+
+Best/worst case running time $T$ is straight forward to find. Consulting the table above we have:
+
+$$
+    T(n) = c_2 + c_3 + c_4(n + 1) + c_5n + c_6n + c_7 + c_8 = an + b,
+$$
+for some $a,\ b$.
+
 ## Next steps
 
 + Implement further algorithms.
-+ Get the terminal command to work.
 
 ## References
 

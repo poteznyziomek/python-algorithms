@@ -78,6 +78,28 @@ class Numbers(object):
 				i -= 1
 			self.a_list[i+1] = key
 	
+	def insertion_sort_r(self):
+		'''Sort self.a_list using a recursive insertion sort algorighm.
+		'''
+		n = len(self.a_list)
+		self._insertion_sort_r(self.a_list, n)
+
+	def _insertion_sort_r(self, a_list, n):
+		'''A method that does the actual job of sorting.
+		
+		This method is called by insertion_sort_r.
+		'''
+		if n < 2:
+			return
+		self._insertion_sort_r(a_list, n-1)
+		key = a_list[n-1]
+		j = n - 2
+		while j >= 0 and a_list[j] > key:
+			a_list[j+1] = a_list[j]
+			j -= 1
+		a_list[j+1] = key
+
+	
 	def selection(self):
 		'''Sort self.a_list using a selection sort algorithm'''
 		for i in range(len(self.a_list)-1):
@@ -124,12 +146,12 @@ class Numbers(object):
 		self._merge_sort(self.a_list, 0, n)
 	
 	def _merge_sort(self, a_list, p, r):
+		'''A method that does the actual job of sorting.
+		
+		Is called by merge_sort method.'''
 		if p >= r:
 			return
 		q = math.floor((p+r)/2)
 		self._merge_sort(a_list, p, q)
 		self._merge_sort(a_list, q+1, r)
 		self.merge(a_list, p, q, r)
-			
-		
-		
