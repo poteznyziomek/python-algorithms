@@ -1,6 +1,8 @@
 # Algorithms
 
-Python implementation of algorithms used to solve the classic problems of: **sorting**, **searching**, etc. This package is reinvention of wheel. The goal is to better understand Python and explore popular algorithms in depth.
+Python implementation of algorithms used to solve the classic problems of:
+**sorting**, **searching**, etc. This package is reinvention of wheel. The goal
+is to better understand Python and explore popular algorithms in depth.
 
 ## Table of contents
 
@@ -17,7 +19,9 @@ Python implementation of algorithms used to solve the classic problems of: **sor
 
 ## Package features
 
-Upon installation package offers a `Numbers` object which behaves like a Python's `list` object, i.e. it supports iteration, access by index, etc. `Numbers` class implements sorting algorithms.
+Upon installation package offers a `Numbers` object which behaves like a
+Python's `list` object, i.e. it supports iteration, access by index, etc.
+`Numbers` class implements sorting algorithms.
 
 1. Install this package.
 2. Inside an environment or Python shell import the `algorithms.sorter` module.
@@ -27,11 +31,64 @@ Upon installation package offers a `Numbers` object which behaves like a Python'
 
 The analysis of all algorithms assumes the RAM model of computation.
 
+### Definition. ($O$-notation (big-oh))
+
+Let a function $g : \mathbb{N} \to \mathbb{N}$ be given. Then
+$$
+    O(g(n)) := \{f \in \mathbb{N}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) \le cg(n))\}.
+$$
+> The shape of the above definition suggests than the $n$ in the $O(g(n))$ is
+> fixed, i.e. for different $n$ the set one the right hand side might possibly
+> have different functions as members. This is not the case. It's just a way the
+> authors in the Cormen book [[1]](#cormen) have stated it. To be more correct
+> one should avoid the parenthesis and the $n$ as in $O(g)$, and when $g$ is
+> annonymous: $O(n \mapsto g(n))$ (not a fan of the last one).
+
+According to the definition above a function $f \in O(g)$ (or $f \in O(g(n))$ if 
+one wishes) iff there is some $c > 0$ such that beginning at some point ($n_0$)
+the inequality $0 \le f(n) \le cg(n)$ hold for all $n$ ($n \ge n_0$).
+
+### Definition. ($\Omega$-notation)
+
+Suppose a function $g : \mathbb{N} \to \mathbb{N}$ is given. Then
+$$
+    \Omega(g(n)) := \{f \in \mathbb{N}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) \le f(n))\}.
+$$
+
+### Definition. ($\Theta$-notation)
+
+For a given function $g : \mathbb{N} \to \mathbb{N}$ we define
+$$
+    \Theta(g(n)) := \{f \in \mathbb{N}^{\mathbb{N}} : (\exists c_1 > 0)(\exists c_2 > 0)(\exists n_0 \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le c_1g(n) \le f(n) \le c_2g(n))\}.
+$$
+
+Obviously $\Theta(g) \subset O(g) \cap \Omega(g)$. To show the inclusion in the
+other direction suppose that $f \in O(g) \cap \Omega(g)$. Then there is $c_1 > 0$
+such that $0 \le f(n) \le c_1g(n)$ for all $n \ge n_1$ and there is $c_2 > 0$
+such that $0 \le c_2g(n) \le f(n)$ for all $n \ge n_2$. We conclude that 
+$0 \le c_2g(n) \le f(n) \le c_1g(n)$ for all $n \ge N$, where $N = \max\{n_1, n_2\}$.
+Hence $\Theta(g) = O(g) \cap \Omega(g)$.
+
+Also note that $(\forall c > 0)(O(c) = O(1))$. To see this fix $c > 0$ and
+$f \in O(c)$. This implies that there is $\varepsilon > 0$ such that
+$0 \le f(n) \le \varepsilon c$ for all $n \ge n_1$. Since
+$\varepsilon c \cdot 1 = \varepsilon c > 0$ we conclude $f \in O(1)$. Now
+suppose $f \in O(1)$ i.e. there is $\varepsilon > 0$ such that $0 \le f(n) \le \varepsilon$
+for all $n \ge n_0$, then if we set $\eta = \varepsilon / c$ the inequality
+$0 \le f(n) \le \eta c$ is satisfied for all $n \ge n_0$. Since $c > 0$ was
+arbitrarily chosen we conclude that the statement is proven.
+
+Using similar arguments one can see that $(\forall c > 0)(\Omega(c) = \Omega(1))$
+and $(\forall c > 0)(\Theta(c) = \Theta(1))$.
+
+Each member of $O(1)$ is a bounded function.
+
 ## Sorting algorithms
 
 ### Insertion sort
 
-The following pseudocode and analysis of this algorithm are from the Cormen book [[1]](#cormen).
+The following pseudocode and analysis of this algorithm are from the Cormen book
+[[1]](#cormen).
 
 > ```
 > Insertion-Sort(A, n)
@@ -45,9 +102,15 @@ The following pseudocode and analysis of this algorithm are from the Cormen book
 > 8.    A[j + 1] = key
 > ```
 
-Let us assume that in the previous pseudocode each statement 1., 2., ..., 8. has a time *cost* equal to $c_1$, $c_2$, ..., $c_8$, where each $c_k$, $k = 1, \dots, 8$ is constant. Moreover let $t_i$, $i = 2, \dots, n$ denote the number of times the `while` statement in line 5, i.e. `while j > 0 and A[j] > key` is executed for that value of $i$. This means that $i \mapsto t(i) := t_i$ is a function of $i$, i.e. $t: \{2, \dots, n\} \to \{1, \dots, n\}$.
+Let us assume that in the previous pseudocode each statement 1., 2., ..., 8. has
+a time *cost* equal to $c_1$, $c_2$, ..., $c_8$, where each $c_k$, $k = 1, \dots, 8$
+is constant. Moreover let $t_i$, $i = 2, \dots, n$ denote the number of times
+the `while` statement in line 5, i.e. `while j > 0 and A[j] > key` is executed
+for that value of $i$. This means that $i \mapsto t(i) := t_i$ is a function of
+$i$, i.e. $t: \{2, \dots, n\} \to \{1, \dots, n\}$.
 
-Let $\{W_i(j)\}_{i=2}^n$ be a sequence of boolean functions (or predicates if one will), i.e. ${W_i : \{0, \dots, i-1\} \to \{\top, \bot\}}$,
+Let $\{W_i(j)\}_{i=2}^n$ be a sequence of boolean functions (or predicates if
+one will), i.e. ${W_i : \{0, \dots, i-1\} \to \{\top, \bot\}}$,
 
 $$
     W_i(j) \equiv j > 0 \wedge A[j] > \mathrm{key}
