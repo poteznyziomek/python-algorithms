@@ -33,10 +33,10 @@ The analysis of all algorithms assumes the RAM model of computation.
 
 ### Definition. ($O$-notation (big-oh))
 
-Let a function $g : \mathbb{N} \to \mathbb{N}$ be given. Then
-$$
-    O(g(n)) := \{f \in \mathbb{N}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) \le cg(n))\}.
-$$
+Let a function $g : \mathbb{N} \to \mathbb{R}$ be given. Then
+```math
+    O(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) \le cg(n))\}.
+```
 > The shape of the above definition suggests than the $n$ in the $O(g(n))$ is
 > fixed, i.e. for different $n$ the set one the right hand side might possibly
 > have different functions as members. This is not the case. It's just a way the
@@ -46,21 +46,21 @@ $$
 
 According to the definition above a function $f \in O(g)$ (or $f \in O(g(n))$ if 
 one wishes) iff there is some $c > 0$ such that beginning at some point ($n_0$)
-the inequality $0 \le f(n) \le cg(n)$ hold for all $n$ ($n \ge n_0$).
+the inequality $0 \le f(n) \le cg(n)$ holds for all $n$ ($n \ge n_0$).
 
 ### Definition. ($\Omega$-notation)
 
-Suppose a function $g : \mathbb{N} \to \mathbb{N}$ is given. Then
-$$
-    \Omega(g(n)) := \{f \in \mathbb{N}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) \le f(n))\}.
-$$
+Suppose a function $g : \mathbb{N} \to \mathbb{R}$ is given. Then
+```math
+    \Omega(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) \le f(n))\}.
+```
 
 ### Definition. ($\Theta$-notation)
 
-For a given function $g : \mathbb{N} \to \mathbb{N}$ we define
-$$
-    \Theta(g(n)) := \{f \in \mathbb{N}^{\mathbb{N}} : (\exists c_1 > 0)(\exists c_2 > 0)(\exists n_0 \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le c_1g(n) \le f(n) \le c_2g(n))\}.
-$$
+For a given function $g : \mathbb{N} \to \mathbb{R}$ we define
+```math
+    \Theta(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\exists c_1 > 0)(\exists c_2 > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le c_1g(n) \le f(n) \le c_2g(n))\}.
+```
 
 Obviously $\Theta(g) \subset O(g) \cap \Omega(g)$. To show the inclusion in the
 other direction suppose that $f \in O(g) \cap \Omega(g)$. Then there is $c_1 > 0$
@@ -82,6 +82,102 @@ Using similar arguments one can see that $(\forall c > 0)(\Omega(c) = \Omega(1))
 and $(\forall c > 0)(\Theta(c) = \Theta(1))$.
 
 Each member of $O(1)$ is a bounded function.
+
+### Definition. ($o$-notation (little-oh))
+
+Let $g: \mathbb{N} \to \mathbb{R}$ be given. Then
+```math
+    o(g(n)) = \{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) < cg(n))\}.
+```
+Recall the usual definition of a limit of a sequence. Let $f : \mathbb{N} \to \mathbb{R}$
+and $L \in \mathbb{R}$. If the following condition is satisfied:
+```math
+    (\forall c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies \vert f(n) - L \vert < c),
+```
+then we say that $L$ is the limit of a sequence $f$ and write $L \in \lim\limits_{n\to\infty} f(n)$.
+Suppose $L_1, L_2 \in \lim\limits_{n\to\infty} f(n)$. Then for arbitrarily
+chosen $c / 2 > 0$ there are $n_1, n_2 \in \mathbb{N}$ such that $n \ge n_1 \implies \vert f(n) - L_1 \vert < c / 2$ and $n \ge n_2 \implies \vert f(n) - L_2 \vert < c / 2$ for all $n \in \mathbb{N}$.
+We have
+```math
+    \vert L_1 - L_2 \vert = \vert f(n) - L_2 - (f(n) - L_1) \vert \le \vert f(n) - L_2 \vert + \vert f(n) - L_1 \vert < \frac{c}{2} + \frac{c}{2} = c
+```
+for all $n \in \mathbb{N}$ such that $n \ge \max\{n_1, n_2\}$. Since $c$ was
+arbitrarily chosen we conclude that $L_1 = L_2$. In other words if the limit of
+the sequence exists, it is unique. We can then write $L = \lim\limits_{n\to\infty} f(n)$
+for the limit instead of $L \in \lim\limits_{n\to\infty} f(n)$.
+
+We say that a sequence converges if there is a limit of this sequence. Next, we
+can define **weak convergence under condition**: let $f : \mathbb{N} \to \mathbb{R}$ be
+a sequence and let $w : f[\mathbb{N}] \to \{\top, \bot\}$ be a condition. Then
+we say that $f$ converges under the condition $w$ if there is a number $L \in \mathbb{R}$
+such that:
+```math
+    (\forall c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies (\vert f(n) - L \vert < c \wedge w(f(n)) = \top)),
+```
+and write
+```math
+    L = \lim\limits_{n\to\infty, w(f(n))} f(n).
+```
+The word weak is used to emphasize that the condition need not to be satisfied
+for the first terms of the sequence.
+
+Using the notion of weak conditional convergence we can reformulate the definition of
+the set $o(\cdot)$ in the following way:
+```math
+    o(g) = \left\{f \in \mathbb{R}^{\mathbb{N}} : \lim\limits_{n\to\infty, \frac{f(n)}{g(n)}\cdot g(n) > 0} \frac{f(n)}{g(n)} = 0 \right\}.
+```
+
+### Definition. ($\omega$-notation)
+
+For a given function $g : \mathbb{N} \to \mathbb{R}$ we define
+```math
+    \omega(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) < f(n))\}.
+```
+Note that $f \in \omega(g)$ iff $g \in o(f)$. For example if $f \in \omega(g)$,
+then for any choice of $c_1 > 0$ the inequality $0 \le cg(n) < f(n)$ is
+satisfied for all sufficiently large $n \in \mathbb{N}$. For the same large $n$
+the inequality $0 \le g(n) < c_2f(n)$, where $c_2 = 1/c_1$ is also true, hence
+$g \in o(f)$. The implication in the other direction is similar. This means
+that $\omega$ can be defined using previously defined $o$:
+```math
+    \omega(g) := \{f \in \mathbb{R}^{\mathbb{N}} : g \in o(f)\}.
+```
+As we've shown before these definitions are equivalent.
+
+### Proposition.
+
+Let $R := \{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\}$.
+The set $R$ is an equivalence relation in $\mathbb{R}^{\mathbb{N}}$.
+
+*Proof.* We need to show that $R$ is reflexive, symmetric and transitive.
+Reflexivity is trivial. To show symmetry assume $f \in \Theta(g)$. Then there
+are $\alpha, \beta > 0$, $n_0 \in \mathbb{N}$ such that 
+$n \ge n_0 \implies 0 \le \alpha g(n) \le f(n) \le \beta g(n)$ for all $n \in \mathbb{N}$.
+Also we have
+```math
+    0 \le \frac{1}{\beta} f(n) \le g(n) \le \frac{1}{\alpha} f(n),
+```
+which means $g \in \Theta(f)$. Now assume that $f \in \Theta(g)$ and $g \in \Theta(h)$.
+Then there are $\alpha_1, \alpha_2, \beta_1, \beta_2 > 0$ and $n_f, n_g \in \mathbb{N}$
+such that
+```math
+    n \ge n_f \implies 0 \le \alpha_1 g(n) \le f(n) \le \alpha_2 g(n)
+```
+and
+```math
+    n \ge n_g \implies 0 \le \beta_1 g(n) \le f(n) \le \beta_2 g(n).
+```
+It is easy to see that
+```math
+n \ge \max\{n_f, n_g\} \implies 0 \le \alpha_1 \beta_1 h(n) \le \alpha_1 g(n) \le f(n) \le \alpha_2 g(n) \le \alpha_2 \beta_2 h(n).
+```
+From the above we conclude that $f \in \Theta(h)$ and the statement is proven. $\square$
+
+For a given function $f \in \mathbb{R}^{\mathbb{N}}$ we define its equivalence
+class as
+```math
+    [f]_R := \{g \in \mathbb{R}^{\mathbb{N}} : (f, g) \in R\}.
+```
 
 ## Sorting algorithms
 
