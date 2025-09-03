@@ -176,8 +176,51 @@ From the above we conclude that $f \in \Theta(h)$ and the statement is proven. $
 For a given function $f \in \mathbb{R}^{\mathbb{N}}$ we define its equivalence
 class as
 ```math
-    [f]_R := \{g \in \mathbb{R}^{\mathbb{N}} : (f, g) \in R\}.
+    [f]_R := \{g \in \mathbb{R}^{\mathbb{N}} : (g, f) \in R\} = \{g \in \mathbb{R}^{\mathbb{N}} : g \in \Theta(f)\}.
 ```
+Note that for $f, g : \mathbb{N} \to \mathbb{R}$ it is either $[f]_R \cap [g]_R = \emptyset$
+or $[f]_R = [g]_R$.
+
+### Examples
+
+1.
+For each $k = 1, 2, \dots$ consider the functions $f_k : \mathbb{N} \to \mathbb{N}$
+defined as $f_k(n) = n^k$. Fix $k, l \in \mathbb{N}$, $k < l$. We'll show that
+$\Theta(n^l) \cap \Theta(n^k) = \emptyset$. Take $f \in \Theta(n^l)$. Then there
+are $\alpha, \beta > 0$ and $N \in \mathbb{N}$ such that
+```math
+    n \ge N \implies 0 \le \alpha n^l \le f(n) \le \beta n^l
+```
+for all $n \in \mathbb{N}$. Suppose there are $\gamma, \delta > 0$ and
+$M \in \mathbb{N}$ such that
+```math
+    n \ge M \implies 0 \le \gamma n^k \le f(n) \le \delta n^k.
+```
+It cannot be that $\alpha n^l \le \gamma n^k$, because then $n^{l-k} \le \gamma / \alpha$,
+which means that the function $n \mapsto n^{l-k}$ is bounded, so it must be
+$\gamma n^k \le \alpha n^l$. Similarly it must be that $\delta n^k \le \beta n^l$.
+With this we obtain
+```math
+    n \ge \max\{N, M\} \implies 0 \le \gamma n^k \le \alpha n^l \le f(n) \le \delta n^k \le \beta n^l
+```
+for all $n \in \mathbb{N}$. But for the same reason discussed above it is not
+possible that $\gamma n^k \le \beta n^l$ or $\alpha n^l \le \delta n^k$. Thus
+$f \notin \Theta(n^k)$. Since $\Theta(n^l)$ and $\Theta(n^l)$ differ by at least
+one element they must be disjoint.
+
+2.
+Fix two functions $f, g : \mathbb{N} \to \mathbb{R}$. Then $\max\{f, g\} \in \Theta(f + g)$.
+Assume that for sufficiently large $n \in \mathbb{N}$ the sum $f + g$ is positive.
+Otherwise if $f + g < 0$, then $\Theta(f + g) = \emptyset$. The case where $f + g = 0$
+is also troublesome. First of all $\Theta(n \mapsto 0) = \{n \mapsto 0\}$ - in
+other words the only member is the zero function (a function that maps $0$ to every
+argument). Suppose that $f > 0$ and $g = -f$ for sufficiently large $n$, then
+$\max\{f, g\} = f$ and $f \notin \Theta(f + g)$. Assume that $f$ and $g$ are
+chosen so that their sum if positive for sufficiently large $n$. Then
+```math
+    0 \le \frac{1}{2}(f + g) \le \max\{f, g\} \le f + g
+```
+for sufficiently large $n$ and we conclude that $\max\{f, g\} \in \Theta(f + g)$.
 
 ## Sorting algorithms
 
