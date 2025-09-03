@@ -146,7 +146,7 @@ As we've shown before these definitions are equivalent.
 
 ### Proposition.
 
-Let $R := \{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\}$.
+Let $`R := \{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\}`$.
 The set $R$ is an equivalence relation in $\mathbb{R}^{\mathbb{N}}$.
 
 *Proof.* We need to show that $R$ is reflexive, symmetric and transitive.
