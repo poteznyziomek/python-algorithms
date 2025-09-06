@@ -35,18 +35,18 @@ The analysis of all algorithms assumes the RAM model of computation.
 
 Let a function $`g : \mathbb{N} \to \mathbb{R}`$ be given. Then
 ```math
-    O(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) \le cg(n))\}.
+    O(g(n)) := \left\{f \in \mathbb{R}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) \le cg(n))\right\}.
 ```
-> The shape of the above definition suggests than the $`n`$ in the $`O(g(n))`$ is
-> fixed, i.e. for different $`n`$ the set one the right hand side might possibly
-> have different functions as members. This is not the case. It's just a way the
+> The shape of the above definition suggests that the $`n`$ in the $`O(g(n))`$ is
+> fixed, i.e. for different $`n`$ the set on the right hand side might possibly
+> consist of different functions. This is not the case. It's just a way the
 > authors in the Cormen book [[1]](#cormen) have stated it. To be more correct
 > one should avoid the parenthesis and the $`n`$ as in $`O(g)`$, and when $`g`$ is
 > annonymous: $`O(n \mapsto g(n))`$ (not a fan of the last one).
 
 According to the definition above a function $`f \in O(g)`$ (or $`f \in O(g(n))`$ if 
 one wishes) iff there is some $`c > 0`$ such that beginning at some point ($`n_0`$)
-the inequality $`0 \le f(n) \le cg(n)`$ holds for all $`n`$ ($`n \ge n_0$`).
+the inequality $`0 \le f(n) \le cg(n)`$ holds for all $`n`$ ($`n \ge n_0`$).
 
 ### Definition. ($`\Omega`$-notation)
 
@@ -63,8 +63,8 @@ For a given function $`g : \mathbb{N} \to \mathbb{R}`$ we define
 ```
 
 Obviously $`\Theta(g) \subset O(g) \cap \Omega(g)`$. To show the inclusion in the
-other direction suppose that $`f \in O(g) \cap \Omega(g)`$. Then there is $`c_1 > 0$
-such that $`0 \le f(n) \le c_1g(n)`$ for all $`n \ge n_1`$ and there is $`c_2 > 0$
+other direction suppose that $`f \in O(g) \cap \Omega(g)`$. Then there is $`c_1 > 0`$
+such that $`0 \le f(n) \le c_1g(n)`$ for all $`n \ge n_1`$ and there is $`c_2 > 0`$
 such that $`0 \le c_2g(n) \le f(n)`$ for all $`n \ge n_2`$. We conclude that 
 $`0 \le c_2g(n) \le f(n) \le c_1g(n)`$ for all $`n \ge N`$, where $`N = \max\{n_1, n_2\}`$.
 Hence $`\Theta(g) = O(g) \cap \Omega(g)`$.
@@ -73,8 +73,8 @@ Also note that $`(\forall c > 0)(O(c) = O(1))`$. To see this fix $`c > 0`$ and
 $`f \in O(c)`$. This implies that there is $`\varepsilon > 0`$ such that
 $`0 \le f(n) \le \varepsilon c`$ for all $`n \ge n_1`$. Since
 $`\varepsilon c \cdot 1 = \varepsilon c > 0`$ we conclude $`f \in O(1)`$. Now
-suppose $`f \in O(1)`$ i.e. there is $`\varepsilon > 0`$ such that $`0 \le f(n) \le \varepsilon$
-for all $`n \ge n_0$, then if we set $`\eta = \varepsilon / c`$ the inequality
+suppose $`f \in O(1)`$ i.e. there is $`\varepsilon > 0`$ such that $`0 \le f(n) \le \varepsilon`$
+for all $`n \ge n_0`$, then if we set $`\eta = \varepsilon / c`$ the inequality
 $`0 \le f(n) \le \eta c`$ is satisfied for all $`n \ge n_0`$. Since $`c > 0`$ was
 arbitrarily chosen we conclude that the statement is proven.
 
@@ -89,13 +89,16 @@ Let $`g: \mathbb{N} \to \mathbb{R}`$ be given. Then
 ```math
     o(g(n)) = \{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) < cg(n))\}.
 ```
-Recall the usual definition of a limit of a sequence. Let $`f : \mathbb{N} \to \mathbb{R}$
+Recall the usual definition of a limit of a sequence. Let $`f : \mathbb{N} \to \mathbb{R}`$
 and $`L \in \mathbb{R}`$. If the following condition is satisfied:
 ```math
     (\forall c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies \vert f(n) - L \vert < c),
 ```
-then we say that $`L`$ is the limit of a sequence $`f`$ and write $`L \in \lim\limits_{n\to\infty} f(n)`$.
-Suppose $`L_1, L_2 \in \lim\limits_{n\to\infty} f(n)`$. Then for arbitrarily
+then we say that $`L`$ is the limit of a sequence $`f`$ and write
+```math
+    L \in \lim\limits_{n\to\infty} f(n).
+```
+Suppose $`L_1, L_2 \in \lim_{n\to\infty} f(n)`$. Then for arbitrarily
 chosen $`c / 2 > 0`$ there are $`n_1, n_2 \in \mathbb{N}`$ such that $`n \ge n_1 \implies \vert f(n) - L_1 \vert < c / 2`$ and $`n \ge n_2 \implies \vert f(n) - L_2 \vert < c / 2`$ for all $`n \in \mathbb{N}`$.
 We have
 ```math
@@ -103,13 +106,13 @@ We have
 ```
 for all $`n \in \mathbb{N}`$ such that $`n \ge \max\{n_1, n_2\}`$. Since $`c`$ was
 arbitrarily chosen we conclude that $`L_1 = L_2`$. In other words if the limit of
-the sequence exists, it is unique. We can then write $`L = \lim\limits_{n\to\infty} f(n)$
+the sequence exists, it is unique. We can then write $`L = \lim\limits_{n\to\infty} f(n)`$
 for the limit instead of $`L \in \lim\limits_{n\to\infty} f(n)`$.
 
 We say that a sequence converges if there is a limit of this sequence. Next, we
 can define **weak convergence under condition**: let $`f : \mathbb{N} \to \mathbb{R}`$ be
 a sequence and let $`w : f[\mathbb{N}] \to \{\top, \bot\}`$ be a condition. Then
-we say that $`f`$ converges under the condition $`w`$ if there is a number $`L \in \mathbb{R}$
+we say that $`f`$ converges under the condition $`w`$ if there is a number $`L \in \mathbb{R}`$
 such that:
 ```math
     (\forall c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies (\vert f(n) - L \vert < c \wedge w(f(n)) = \top)),
@@ -133,12 +136,12 @@ For a given function $`g : \mathbb{N} \to \mathbb{R}`$ we define
 ```math
     \omega(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) < f(n))\}.
 ```
-Note that $`f \in \omega(g)`$ iff $`g \in o(f)`$. For example if $`f \in \omega(g)$,
+Note that $`f \in \omega(g)`$ iff $`g \in o(f)`$. For example if $`f \in \omega(g)`$,
 then for any choice of $`c_1 > 0`$ the inequality $`0 \le cg(n) < f(n)`$ is
-satisfied for all sufficiently large $`n \in \mathbb{N}`$. For the same large $`n$
-the inequality $`0 \le g(n) < c_2f(n)$, where $`c_2 = 1/c_1`$ is also true, hence
+satisfied for all sufficiently large $`n \in \mathbb{N}`$. For the same large $`n`$
+the inequality $`0 \le g(n) < c_2f(n)`$, where $`c_2 = 1/c_1`$ is also true, hence
 $`g \in o(f)`$. The implication in the other direction is similar. This means
-that $`\omega`$ can be defined using previously defined $`o$:
+that $`\omega`$ can be defined using previously defined $`o`$:
 ```math
     \omega(g) := \{f \in \mathbb{R}^{\mathbb{N}} : g \in o(f)\}.
 ```
@@ -146,12 +149,12 @@ As we've shown before these definitions are equivalent.
 
 ### Proposition.
 
-Let $`R := \{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\}`$.
+Let $`R := \left\{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\right\}`$.
 The set $`R`$ is an equivalence relation in $`\mathbb{R}^{\mathbb{N}}`$.
 
 *Proof.* We need to show that $`R`$ is reflexive, symmetric and transitive.
 Reflexivity is trivial. To show symmetry assume $`f \in \Theta(g)`$. Then there
-are $`\alpha, \beta > 0$, $`n_0 \in \mathbb{N}`$ such that 
+are $`\alpha, \beta > 0`$, $`n_0 \in \mathbb{N}`$ such that 
 $`n \ge n_0 \implies 0 \le \alpha g(n) \le f(n) \le \beta g(n)`$ for all $`n \in \mathbb{N}`$.
 Also we have
 ```math
@@ -185,7 +188,7 @@ or $`[f]_R = [g]_R`$.
 
 1.
 For each $`k = 1, 2, \dots`$ consider the functions $`f_k : \mathbb{N} \to \mathbb{N}`$
-defined as $`f_k(n) = n^k`$. Fix $`k, l \in \mathbb{N}$, $`k < l`$. We'll show that
+defined as $`f_k(n) = n^k`$. Fix $`k, l \in \mathbb{N}`$, $`k < l`$. We'll show that
 $`\Theta(n^l) \cap \Theta(n^k) = \emptyset`$. Take $`f \in \Theta(n^l)`$. Then there
 are $`\alpha, \beta > 0`$ and $`N \in \mathbb{N}`$ such that
 ```math
@@ -196,7 +199,7 @@ $`M \in \mathbb{N}`$ such that
 ```math
     n \ge M \implies 0 \le \gamma n^k \le f(n) \le \delta n^k.
 ```
-It cannot be that $`\alpha n^l \le \gamma n^k$, because then $`n^{l-k} \le \gamma / \alpha$,
+It cannot be that $`\alpha n^l \le \gamma n^k`$, because then $`n^{l-k} \le \gamma / \alpha`$,
 which means that the function $`n \mapsto n^{l-k}`$ is bounded, so it must be
 $`\gamma n^k \le \alpha n^l`$. Similarly it must be that $`\delta n^k \le \beta n^l`$.
 With this we obtain
@@ -205,16 +208,16 @@ With this we obtain
 ```
 for all $`n \in \mathbb{N}`$. But for the same reason discussed above it is not
 possible that $`\gamma n^k \le \beta n^l`$ or $`\alpha n^l \le \delta n^k`$. Thus
-$`f \notin \Theta(n^k)`$. Since $`\Theta(n^l)`$ and $`\Theta(n^l)`$ differ by at least
+$`f \notin \Theta(n^k)`$. Since $`\Theta(n^l)`$ and $`\Theta(n^k)`$ differ by at least
 one element they must be disjoint.
 
 2.
 Fix two functions $`f, g : \mathbb{N} \to \mathbb{R}`$. Then $`\max\{f, g\} \in \Theta(f + g)`$.
 Assume that for sufficiently large $`n \in \mathbb{N}`$ the sum $`f + g`$ is positive.
-Otherwise if $`f + g < 0$, then $`\Theta(f + g) = \emptyset`$. The case where $`f + g = 0$
+Otherwise if $`f + g < 0`$, then $`\Theta(f + g) = \emptyset`$. The case where $`f + g = 0`$
 is also troublesome. First of all $`\Theta(n \mapsto 0) = \{n \mapsto 0\}`$ - in
 other words the only member is the zero function (a function that maps $`0`$ to every
-argument). Suppose that $`f > 0`$ and $`g = -f`$ for sufficiently large $`n$, then
+argument). Suppose that $`f > 0`$ and $`g = -f`$ for sufficiently large $`n`$, then
 $`\max\{f, g\} = f`$ and $`f \notin \Theta(f + g)`$. Assume that $`f`$ and $`g`$ are
 chosen so that their sum is positive for sufficiently large $`n`$. Then
 ```math
@@ -258,12 +261,12 @@ be the equivalence relation defined before. Fix an operation from the cartesian
 product defined above and call it $`F`$. Let $`n = \mathrm{arity} F`$. If the
 following condition
 ```math
-    (\forall f_1, \dots, f_n, f_1',\dots, f_n' \in \mathbb{R}^{\mathbb{N}})(((f_1, f_1') \in R \wedge \dots \wedge (f_n, f_n') \in R) \implies (F(f_1, \dots, f_n), F(f_1', \dots, f_n')) \in R)
+    (\forall f_1, \dots, f_n, f_1',\dots, f_n' \in \mathbb{R}^{\mathbb{N}}) \left(((f_1, f_1') \in R \wedge \dots \wedge (f_n, f_n') \in R) \implies (F(f_1, \dots, f_n), F(f_1', \dots, f_n')) \in R\right)
 ```
 is satisfied, then we say that the relation $`R`$ is compatible with the
 operation $`F`$. If the relation $`R`$ is compatible with every operation in
 the algebra then we say that $`R`$ is a congruence of this algebra. With a
-congruence we can introduce an algebraic structure on the set $`\mathbb{R}^{\mathbb{N}} / R := \{[f]_R : f \in \mathbb{R}^{\mathbb{N}}\}`$.
+congruence we can introduce an algebraic structure on the set $`\mathbb{R}^{\mathbb{N}} / R := \left\{[f]_R : f \in \mathbb{R}^{\mathbb{N}}\right\}`$.
 
 Let's check whether $`R`$ is compatible with $`F_1`$ (i.e. addition) and
 $`F_2`$ (i.e. multiplication). Assume that $`f_1 \in \Theta(f_1')`$ and
@@ -320,7 +323,7 @@ for all $`n \in \mathbb{N}`$, which is not possible, hence $`f \in o(g) \cap \om
 The following pseudocode and analysis of this algorithm are from the Cormen book
 [[1]](#cormen).
 
-> ```math
+> ```
 > Insertion-Sort(A, n)
 > 1. for i = 2 to n
 > 2.    key = A[i]
@@ -333,8 +336,8 @@ The following pseudocode and analysis of this algorithm are from the Cormen book
 > ```
 
 Let us assume that in the previous pseudocode each statement 1., 2., ..., 8. has
-a time *cost* equal to $`c_1$, $`c_2$, ..., $`c_8$, where each $`c_k$, $`k = 1, \dots, 8$
-is constant. Moreover let $`t_i$, $`i = 2, \dots, n`$ denote the number of times
+a time *cost* equal to $`c_1`$, $`c_2`$, ..., $`c_8`$, where each $`c_k`$, $`k = 1, \dots, 8`$
+is constant. Moreover let $`t_i`$, $`i = 2, \dots, n`$ denote the number of times
 the `while` statement in line 5, i.e. `while j > 0 and A[j] > key` is executed
 for that value of $`i`$. This means that $`i \mapsto t(i) := t_i`$ is a function of
 $`i`$, i.e. $`t: \{2, \dots, n\} \to \{1, \dots, n\}`$.
@@ -349,40 +352,40 @@ one will), i.e. $`{W_i : \{0, \dots, i-1\} \to \{\top, \bot\}}$,
 for each $`i = 2, \dots, n`$. Now fix $`i`$ and we have a sequence
 
 ```math
-    (W_i(0), W_i(1), \dots, W_i(i-2), W_i(i-1)),
+    \left(W_i(0), W_i(1), \dots, W_i(i-2), W_i(i-1)\right),
 ```
 
-but during the algorithm execution the elements of the above sequence are evaluated in reverse order (in step 4. we set $`j \leftarrow i-1`$ and later in step 7. we decrease it $`j \leftarrow j-1$):
+but during the algorithm execution the elements of the above sequence are evaluated in reverse order (in step 4. we set $`j \leftarrow i-1`$ and later in step 7. we decrease it $`j \leftarrow j-1`$):
 
 ```math
-    (W_i(i-1), W_i(i-2), \dots, W_i(1), W_i(0)).
+    \left(W_i(i-1), W_i(i-2), \dots, W_i(1), W_i(0)\right).
 ```
 
-Now note that in the above sequence, if for say $`j_0 \in \{0, \dots, i-1\}`$ we have $`W_i(j_0) = \bot$, then:
+Now note that in the above sequence, if for say $`j_0 \in \{0, \dots, i-1\}`$ we have $`W_i(j_0) = \bot`$, then:
 
 ```math
     W_i(j_0) = W_i(j_0-1) = \dots = W_i(0) = \bot,
 ```
 
-because `A[1:i]` is sorted, so if $`A[j_0] < \mathrm{key}$, then $`A[j_0 - 1] < \mathrm{key}$, but
+because `A[1:i]` is sorted, so if $`A[j_0] < \mathrm{key}`$, then $`A[j_0 - 1] < \mathrm{key}`$, but
 
 ```math
     W_i(i-1) = W_i(i-2) = \dots = W_i(j_0+1) = \top.
 ```
 
-So if $`i`$ is fixed, then $`t_i`$ is equal to the number of $`\top`$ in the sequence plus one (we take into account the first $`j`$ such that $`W_i(j) = \bot$):
+So if $`i`$ is fixed, then $`t_i`$ is equal to the number of $`\top`$ in the sequence plus one (we take into account the first $`j`$ such that $`W_i(j) = \bot`$):
 
 ```math
     t_i = \mathrm{card}\{j \in \{0, \dots, i-1\} : W_i(j) = \top\} + 1 = \mathrm{card}W_i^{-1}[\{\top\}] + 1.
 ```
 
-If $`i = 2`$ then the cost of executing the `while` in line 5 if $`c_5 t_2$; if $`i = 3`$ then the cost is equal to $`c_5 t_3`$. So the total cost after all iterations of $`i`$ is equal:
+If $`i = 2`$ then the cost of executing the `while` in line 5 if $`c_5 t_2`$; if $`i = 3`$ then the cost is equal to $`c_5 t_3`$. So the total cost after all iterations of $`i`$ is equal:
 
 ```math
     c_5 t_2 + c_5 t_3 + \dots + c_5 t_n = c_5 \sum_{i=2}^n t_i.
 ```
 
-Similarly the statement in line 6 is executed $`t_i - 1`$ times for each fixed $`i`$. We subtract $`1$, because if the test in the `while` statement evaluates to $`\bot$, then the algorithm does not enter the body of the loop. The corresponding cost of the execution of line 6 is equal to $`c_6(t_i - 1)`$. Summing over all values of $`i`$ yields:
+Similarly the statement in line 6 is executed $`t_i - 1`$ times for each fixed $`i`$. We subtract $`1`$, because if the test in the `while` statement evaluates to $`\bot`$, then the algorithm does not enter the body of the loop. The corresponding cost of the execution of line 6 is equal to $`c_6(t_i - 1)`$. Summing over all values of $`i`$ yields:
 
 ```math
     c_6 (t_2 - 1) + c_6 (t_3 - 1) + \dots + c_6 (t_n - 1) = c_6 \sum_{i=2}^n (t_i - 1).
@@ -391,16 +394,16 @@ Similarly the statement in line 6 is executed $`t_i - 1`$ times for each fixed $
 The explenation for line 7 is similar to line 6.
 
 
-| statement number | *cost* |        *times*          |
-| ---------------- | ------ | ----------------------- |
-|         1        | $`c_1`$  |          $`n`$            |
-|         2        | $`c_2`$  |        $`n - 1`$          |
-|         3        |  $`0`$   |        $`n - 1`$          |
-|         4        | $`c_4`$  |        $`n - 1`$          |
-|         5        | $`c_5`$  |    $`\sum_{i=2}^nt_i`$    |
-|         6        | $`c_6`$  | $`\sum_{i=2}^n(t_i - 1)`$ |
-|         7        | $`c_7`$  | $`\sum_{i=2}^n(t_i - 1)`$ |
-|         8        | $`c_8`$  |        $`n - 1`$          |
+| statement number |  *cost*   |        *times*          |
+| ---------------- | --------- | ----------------------- |
+|         1        |  $`c_1`$  |          $`n`$            |
+|         2        |  $`c_2`$  |        $`n - 1`$          |
+|         3        |   $`0`$   |        $`n - 1`$          |
+|         4        |  $`c_4`$  |        $`n - 1`$          |
+|         5        |  $`c_5`$  |    $`\sum_{i=2}^nt_i`$    |
+|         6        |  $`c_6`$  | $`\sum_{i=2}^n(t_i - 1)`$ |
+|         7        |  $`c_7`$  | $`\sum_{i=2}^n(t_i - 1)`$ |
+|         8        |  $`c_8`$  |        $`n - 1`$          |
 
 ```math
     T(n) = c_1n + c_2(n - 1) + c_4(n - 1) + c_5\sum_{i=2}^nt_i + \\ + c_6\sum_{i=2}^n(t_i - 1) + c_7\sum_{i=2}^n(t_i - 1) + c_8(n - 1).
