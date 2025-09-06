@@ -445,7 +445,7 @@ for all $`i \in \{2, \dots, n\}`$. Thus the worst case is achieved when:
 
 > **Note**
 >
-> Since arrays are assumed to be indexed from 1 the functions $`W_i`$ are not well-defined. In particular $`A[0]`$ is not defined. We abuse the fact that the boolean operators `and` and `or` are **short circuiting**, so that in our situation when $`0 > 0`$ evaluates to $`\bot`$ the expression $`A[0] > \mathrm{key}`$ is not evaluated. To avoid the abuse we could extend the definition of $`W_i`$ like so (assuming $`W_i(0)`$ is not defined for all $`i \in \{2, \dots, n\}$):
+> Since arrays are assumed to be indexed from 1 the functions $`W_i`$ are not well-defined. In particular $`A[0]`$ is not defined. We abuse the fact that the boolean operators `and` and `or` are **short circuiting**, so that in our situation when $`0 > 0`$ evaluates to $`\bot`$ the expression $`A[0] > \mathrm{key}`$ is not evaluated. To avoid the abuse we could extend the definition of $`W_i`$ like so (assuming $`W_i(0)`$ is not defined for all $`i \in \{2, \dots, n\}`$):
 > 
 > ```math
 >    W'_i : \{0, \dots, i - 1\} \to \{\top, \bot\},
@@ -461,7 +461,7 @@ for all $`i \in \{2, \dots, n\}`$. Thus the worst case is achieved when:
 
 > **Note**
 >
-> To be fair the functions $`W_i$, $`i \in \{2, \dots, n\}`$ are not really the predicates $`j > 0 \wedge A[j] > \mathrm{key}`$ but valuations of these predicates.
+> To be fair the functions $`W_i`$, $`i \in \{2, \dots, n\}`$ are not really the predicates $`j > 0 \wedge A[j] > \mathrm{key}`$ but valuations of these predicates.
 
 In the worst case we have:
 
