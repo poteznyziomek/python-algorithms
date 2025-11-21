@@ -1,8 +1,8 @@
 # Algorithms
 
-Python implementation of algorithms used to solve the classic problems of:
-**sorting**, **searching**, etc. This package is reinvention of wheel. The goal
-is to better understand Python and explore popular algorithms in depth.
+Python implementation of algorithms used to solve the old problems of:
+**sorting**, **searching**, etc. The goal is to better understand Python and
+explore popular algorithms in depth.
 
 ## Table of contents
 
@@ -14,13 +14,12 @@ is to better understand Python and explore popular algorithms in depth.
 4. [Search algorithms](#search-algorithms)
     1. [Binary search](#binary-search)
 5. [Misc. algorithms](#misc-algorithms)
-6. [Next steps](#next-steps)
-7. [References](#references)
+6. [References](#references)
 
 ## Package features
 
 Upon installation package offers a `Numbers` object which behaves like a
-Python's `list` object, i.e. it supports iteration, access by index, etc.
+Python's `list` object, i.e. it supports iteration, indexing, etc.
 `Numbers` class implements sorting algorithms.
 
 1. Install this package.
@@ -52,14 +51,14 @@ the inequality $`0 \le f(n) \le cg(n)`$ holds for all $`n`$ ($`n \ge n_0`$).
 
 Suppose a function $`g : \mathbb{N} \to \mathbb{R}`$ is given. Then
 ```math
-    \Omega(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) \le f(n))\}.
+    \Omega(g(n)) := \left\{f \in \mathbb{R}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) \le f(n))\right\}.
 ```
 
 ### Definition. ($`\Theta`$-notation)
 
 For a given function $`g : \mathbb{N} \to \mathbb{R}`$ we define
 ```math
-    \Theta(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\exists c_1 > 0)(\exists c_2 > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le c_1g(n) \le f(n) \le c_2g(n))\}.
+    \Theta(g(n)) := \left\{f \in \mathbb{R}^{\mathbb{N}} : (\exists c_1 > 0)(\exists c_2 > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le c_1g(n) \le f(n) \le c_2g(n))\right\}.
 ```
 
 Obviously $`\Theta(g) \subset O(g) \cap \Omega(g)`$. To show the inclusion in the
@@ -87,7 +86,7 @@ Each member of $`O(1)`$ is a bounded function.
 
 Let $`g: \mathbb{N} \to \mathbb{R}`$ be given. Then
 ```math
-    o(g(n)) = \{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) < cg(n))\}.
+    o(g(n)) = \left\{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) < cg(n))\right\}.
 ```
 Recall the usual definition of a limit of a sequence. Let $`f : \mathbb{N} \to \mathbb{R}`$
 and $`L \in \mathbb{R}`$. If the following condition is satisfied:
@@ -106,13 +105,13 @@ We have
 ```
 for all $`n \in \mathbb{N}`$ such that $`n \ge \max\{n_1, n_2\}`$. Since $`c`$ was
 arbitrarily chosen we conclude that $`L_1 = L_2`$. In other words if the limit of
-the sequence exists, it is unique. We can then write $`L = \lim\limits_{n\to\infty} f(n)`$
-for the limit instead of $`L \in \lim\limits_{n\to\infty} f(n)`$.
+the sequence exists, it is unique. We can then write $`L = \lim_{n\to\infty} f(n)`$
+for the limit instead of $`L \in \lim_{n\to\infty} f(n)`$.
 
-We say that a sequence converges if there is a limit of this sequence. Next, we
+We say that a sequence converges if there is the limit of this sequence. Next, we
 can define **weak convergence under condition**: let $`f : \mathbb{N} \to \mathbb{R}`$ be
 a sequence and let $`w : f[\mathbb{N}] \to \{\top, \bot\}`$ be a condition. Then
-we say that $`f`$ converges under the condition $`w`$ if there is a number $`L \in \mathbb{R}`$
+we say that $`f`$ converges weakly under the condition $`w`$ if there is a number $`L \in \mathbb{R}`$
 such that:
 ```math
     (\forall c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies (\vert f(n) - L \vert < c \wedge w(f(n)) = \top)),
@@ -134,7 +133,7 @@ the set $`o(\cdot)`$ in the following way:
 
 For a given function $`g : \mathbb{N} \to \mathbb{R}`$ we define
 ```math
-    \omega(g(n)) := \{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) < f(n))\}.
+    \omega(g(n)) := \left\{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) < f(n))\right\}.
 ```
 Note that $`f \in \omega(g)`$ iff $`g \in o(f)`$. For example if $`f \in \omega(g)`$,
 then for any choice of $`c_1 > 0`$ the inequality $`0 \le cg(n) < f(n)`$ is
@@ -143,7 +142,7 @@ the inequality $`0 \le g(n) < c_2f(n)`$, where $`c_2 = 1/c_1`$ is also true, hen
 $`g \in o(f)`$. The implication in the other direction is similar. This means
 that $`\omega`$ can be defined using previously defined $`o`$:
 ```math
-    \omega(g) := \{f \in \mathbb{R}^{\mathbb{N}} : g \in o(f)\}.
+    \omega(g) := \left\{f \in \mathbb{R}^{\mathbb{N}} : g \in o(f)\right\}.
 ```
 As we've shown before these definitions are equivalent.
 
@@ -161,7 +160,7 @@ Also we have
     0 \le \frac{1}{\beta} f(n) \le g(n) \le \frac{1}{\alpha} f(n),
 ```
 which means $`g \in \Theta(f)`$. Now assume that $`f \in \Theta(g)`$ and $`g \in \Theta(h)`$.
-Then there are $`\alpha_1, \alpha_2, \beta_1, \beta_2 > 0`$ and $`n_f, n_g \in \mathbb{N}$
+Then there are $`\alpha_1, \alpha_2, \beta_1, \beta_2 > 0`$ and $`n_f, n_g \in \mathbb{N}`$
 such that
 ```math
     n \ge n_f \implies 0 \le \alpha_1 g(n) \le f(n) \le \alpha_2 g(n)
@@ -174,23 +173,26 @@ It is easy to see that
 ```math
 n \ge \max\{n_f, n_g\} \implies 0 \le \alpha_1 \beta_1 h(n) \le \alpha_1 g(n) \le f(n) \le \alpha_2 g(n) \le \alpha_2 \beta_2 h(n).
 ```
-From the above we conclude that $`f \in \Theta(h)`$ and the statement is proven. $`\square$
+From the above we conclude that $`f \in \Theta(h)`$ and the statement is proven.
+$`\square`$
 
-For a given function $`f \in \mathbb{R}^{\mathbb{N}}`$ we define its equivalence
-class as
+For a given function $`f \in \mathbb{R}^{\mathbb{N}}`$ we define its
+equivalence class as
 ```math
     [f]_R := \left\{g \in \mathbb{R}^{\mathbb{N}} : (g, f) \in R\right\} = \left\{g \in \mathbb{R}^{\mathbb{N}} : g \in \Theta(f)\right\}.
 ```
-Note that for $`f, g : \mathbb{N} \to \mathbb{R}`$ it is either $`[f]_R \cap [g]_R = \emptyset`$
-or $`[f]_R = [g]_R`$.
+Note that for $`f, g : \mathbb{N} \to \mathbb{R}`$ it is either
+$`[f]_R \cap [g]_R = \emptyset`$ or $`[f]_R = [g]_R`$.
 
 ### Examples
 
 1.
-For each $`k = 1, 2, \dots`$ consider the functions $`f_k : \mathbb{N} \to \mathbb{N}`$
-defined as $`f_k(n) = n^k`$. Fix $`k, l \in \mathbb{N}`$, $`k < l`$. We'll show that
-$`\Theta(n^l) \cap \Theta(n^k) = \emptyset`$. Take $`f \in \Theta(n^l)`$. Then there
-are $`\alpha, \beta > 0`$ and $`N \in \mathbb{N}`$ such that
+For each $`k = 1, 2, \dots`$ consider the functions
+$`f_k : \mathbb{N} \to \mathbb{N}`$ defined as $`f_k(n) = n^k`$. Fix
+$`k, l \in \mathbb{N}`$, $`k < l`$. We'll show that
+$`\Theta\left(n^l\right) \cap \Theta\left(n^k\right) = \emptyset`$. Take
+$`f \in \Theta\left(n^l\right)`$. Then there are
+$`\alpha, \beta > 0`$ and $`N \in \mathbb{N}`$ such that
 ```math
     n \ge N \implies 0 \le \alpha n^l \le f(n) \le \beta n^l
 ```
@@ -230,7 +232,7 @@ Consider the algebra $`(\mathbb{R}; +, \cdot, -, 0, 1)`$ with the usual binary
 operations $`+, \cdot`$, unary operation $`-`$ (additive inverse) and two constants
 $`0`$ and $`1`$. From this we can construct the cartesian power
 ```math
-    (\mathbb{R}; +, \cdot, -, 0, 1)^{\mathbb{N}} = (\mathbb{R}^{\mathbb{N}}; F_1, F_2, F_3, c_1, c_2),
+    (\mathbb{R}; +, \cdot, -, 0, 1)^{\mathbb{N}} = \left(\mathbb{R}^{\mathbb{N}}; F_1, F_2, F_3, c_1, c_2\right),
 ```
 where the operations are defined as follows:
 ```math
@@ -252,11 +254,11 @@ for all $`f, g \in \mathbb{R}^{\mathbb{N}}`$.
 
 > Note.
 >
-> Let $`(A; \{f_t\}_{t\in T})`$ be an algebra. If $`f_t : A^{n_t} \to A`$,
+> Let $`\left(A; \{f_t\}_{t\in T}\right)`$ be an algebra. If $`f_t : A^{n_t} \to A`$,
 > where $`n_t \in \mathbb{N}`$ for some $`t \in T`$ then $`n_t`$ is called
 > the **arity** of $`f_t`$ and we write $`\mathrm{arity} f_t = n_t`$.
 
-Let $`R := \{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\}`$
+Let $`R := \left\{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\right\}`$
 be the equivalence relation defined before. Fix an operation from the cartesian
 product defined above and call it $`F`$. Let $`n = \mathrm{arity} F`$. If the
 following condition
@@ -266,7 +268,8 @@ following condition
 is satisfied, then we say that the relation $`R`$ is compatible with the
 operation $`F`$. If the relation $`R`$ is compatible with every operation in
 the algebra then we say that $`R`$ is a congruence of this algebra. With a
-congruence we can introduce an algebraic structure on the set $`\mathbb{R}^{\mathbb{N}} / R := \left\{[f]_R : f \in \mathbb{R}^{\mathbb{N}}\right\}`$.
+congruence we can introduce an algebraic structure on the set
+$`\mathbb{R}^{\mathbb{N}} / R := \left\{[f]_R : f \in \mathbb{R}^{\mathbb{N}}\right\}`$.
 
 Let's check whether $`R`$ is compatible with $`F_1`$ (i.e. addition) and
 $`F_2`$ (i.e. multiplication). Assume that $`f_1 \in \Theta(f_1')`$ and
@@ -285,22 +288,22 @@ $`\eta = \max\{\beta, \delta\}`$, $`N = \max\{n_1, n_2\}`$. Then for all $`n \in
 ```math
     n \ge N \implies \xi(f_1'(n) + f_2'(n)) \le f_1(n) + f_2(n) \le \eta(f_1'(n) + f_2'(n)).
 ```
-Hence $`F_1(f_1, f_2) \in \Theta(F_1(f_1', f_2'))`$. If for the same
+Hence $`F_1(f_1, f_2) \in \Theta\left(F_1(f_1', f_2')\right)`$. If for the same
 $`\alpha, \beta, \gamma, \delta, n_1, n_2`$ one chooses $`\xi = \alpha \gamma`$,
 $`\eta = \beta \delta`$, $`N = \max\{n_1, n_2\}`$, then
 ```math
     n \ge N \implies \xi f_1'(n) f_2'(n) \le f_1(n) f_2(n) \le \eta f_1'(n) f_2'(n)
 ```
-for all $`n \in \mathbb{N}`$. Thus $`F_2(f_1, f_2) \in \Theta(F_2(f_1', f_2'))`$.
+for all $`n \in \mathbb{N}`$. Thus $`F_2(f_1, f_2) \in \Theta\left(F_2(f_1', f_2')\right)`$.
 
 Unfortunately $`R`$ is not compatible with $`F_3`$ (i.e. taking an additive inverse).
 For example $`n \mapsto n \in \Theta(n \mapsto n)`$, but $`\Theta(n \mapsto -n) = \emptyset`$.
 
-3.
+4.
 To see that $`n \mapsto 2^{n+1} \in O(n \mapsto 2^n)`$ pick any $`c \ge 2`$ in
 the definition of the set $`O(\cdot)`$. On the other hand $`n \mapsto 2^{2n} \notin O(n \mapsto 2^n)`$, otherwise it would mean that the function $`n \mapsto 2^n`$ is bounded.
 
-4.
+5.
 The sets $`o(g)`$ and $`\omega(g)`$ are disjoint. Take $`f \in o(g) \cap \omega(g)`$.
 This means that for a fixed $`c > 0`$ there are $`n_1, n_2 > 0`$ such that
 ```math
@@ -343,7 +346,7 @@ for that value of $`i`$. This means that $`i \mapsto t(i) := t_i`$ is a function
 $`i`$, i.e. $`t: \{2, \dots, n\} \to \{1, \dots, n\}`$.
 
 Let $`\{W_i(j)\}_{i=2}^n`$ be a sequence of boolean functions (or predicates if
-one will), i.e. $`{W_i : \{0, \dots, i-1\} \to \{\top, \bot\}}$,
+one will), i.e. $`{W_i : \{0, \dots, i-1\} \to \{\top, \bot\}}`$,
 
 ```math
     W_i(j) \equiv j > 0 \wedge A[j] > \mathrm{key}
@@ -475,7 +478,7 @@ for all $`i \in \{2, \dots, n\}`$. Plugging $`t_i = i`$ in the formula for $`T(n
     T(n) = (c_1 + c_2 + c_4 + c_8)n + (-c_2 - c_4 - c_8) + \\[2ex] + c_5\frac{(2 + n)(n - 1)}{2} + (c_6 + c_7)\frac{(1 + n - 1)(n - 1)}{2} = \\[2ex] = \frac{1}{2}(c_5 + c_6 + c_7)n^2 + \frac{1}{2}(2c_1 + 2c_2 + 2c_4 + c_5 - c_6 - c_7 + 2c_8)n + \\[2ex] + (-c_2 - c_4 - c_5 - c_8).
 ```
 
-Thus worst case running time is quadratic in $`n$: $`T(n) = an^2 + bn + c`$ for some $`a,b,c$, $`a\not=0`$.
+Thus worst case running time is quadratic in $`n`$: $`T(n) = an^2 + bn + c`$ for some $`a,b,c`$, $`a\not=0`$.
 
 #### Recursive insertion sort
 
@@ -525,7 +528,7 @@ Insertion sort algorithm can be thought of as a recursive algorithm: in order to
 |         9        |  $`c_9`$   |            $`n - 1`$               |
 |         10       | $`c_{10}`$ |            $`n - 1`$               |
 
-Let $`\{W_i\}_{i=1}^{n-1}`$ be a sequence of boolean functions $`{W_i : \{i+1, \dots, n\} \to \{\top, \bot\}}$, $`W_i(j) \equiv A[i] > A[j]`$. Then for each $`i \in \{i, \dots, n-1\}`$ let $`t_i`$ denote the number of times the test in the `if` statement in line 5 evaluates to $`\top$, i.e.:
+Let $`\{W_i\}_{i=1}^{n-1}`$ be a sequence of boolean functions $`{W_i : \{i+1, \dots, n\} \to \{\top, \bot\}}`$, $`W_i(j) \equiv A[i] > A[j]`$. Then for each $`i \in \{i, \dots, n-1\}`$ let $`t_i`$ denote the number of times the test in the `if` statement in line 5 evaluates to $`\top`$, i.e.:
 
 ```math
     t_i = \mathrm{card}W_i^{-1}[\{\top\}].
@@ -545,7 +548,7 @@ The worst case scenario would be when $`W_i(j) = \top`$ for all $`j \in \{i+1, \
     t_i = \mathrm{card}W_i^{-1}[\{\top\}] = \mathrm{card}\text{ }\mathrm{dom}W_i = n - (i + 1) + 1 = n - i
 ```
 
-for all $`i \in \{i, \dots, n-1\}`$. The formula for running time is similar, we just need to adjust for $`c_6$:
+for all $`i \in \{i, \dots, n-1\}`$. The formula for running time is similar, we just need to adjust for $`c_6`$:
 
 ```math
     T(n) = \frac{1}{2} (c_4 + c_5 + c_6)n^2 + (c_1 + c_2 + \frac{c_4}{2} - \frac{c_5}{2} - \frac{c_6}{2} + c_8 + c_9 + c_{10})n + \\[2ex] - (c_2 + c_4 + c_8 + c_9 + c_{10}).
@@ -574,7 +577,7 @@ Recall the **linear search**. For given array $`A`$ and value $`v`$ we search fo
 
 ### Adding two binary numbers of length $`n`$ ([Cormen](#cormen) task 2.1-5)
 
-Consider the problem of adding two $`n`$-bit binary integers $`a`$ and $`b$, stored in two $`n`$-element arrays $`A[0:n-1]`$ and $`B[0:n-1]$, where each element is either $`0`$ or $`1$, $`a = \sum_{i=0}^{n-1} A[i] \cdot 2^i$, and $`b = \sum_{i=0}^{n-1} B[i] \cdot 2^i`$. The sum $`c = a + b`$ of the two integers should be stored in binary form in an $`(n + 1)`$-element array $`C[0:n]$, where $`c = \sum_{i=0}^n C[i] \cdot 2^i`$. Write a procedure <span style="font-variant:small-caps;">Add-Binary-Integers</span> that takes as input arrays $`A`$ and $`B$, along with the length $`n$, and returns array $`C`$ holding the sum.
+Consider the problem of adding two $`n`$-bit binary integers $`a`$ and $`b`$, stored in two $`n`$-element arrays $`A[0:n-1]`$ and $`B[0:n-1]`$, where each element is either $`0`$ or $`1`$, $`a = \sum_{i=0}^{n-1} A[i] \cdot 2^i`$, and $`b = \sum_{i=0}^{n-1} B[i] \cdot 2^i`$. The sum $`c = a + b`$ of the two integers should be stored in binary form in an $`(n + 1)`$-element array $`C[0:n]`$, where $`c = \sum_{i=0}^n C[i] \cdot 2^i`$. Write a procedure <span style="font-variant:small-caps;">Add-Binary-Integers</span> that takes as input arrays $`A`$ and $`B`$, along with the length $`n`$, and returns array $`C`$ holding the sum.
 
 > ```
 > Add-Binary-Integers(A, B, n)
@@ -599,16 +602,12 @@ Consider the problem of adding two $`n`$-bit binary integers $`a`$ and $`b$, sto
 |         7        |  $`c_7`$   |   $`1`$   |
 |         8        |  $`c_8`$   |   $`1`$   |
 
-Best/worst case running time $`T``$ is straight forward to find. Consulting the table above we have:
+Best/worst case running time $`T`$ is straight forward to find. Consulting the table above we have:
 
 ```math
     T(n) = c_2 + c_3 + c_4(n + 1) + c_5n + c_6n + c_7 + c_8 = an + b,
 ```
 for some $`a,\ b`$.
-
-## Next steps
-
-+ Implement further algorithms.
 
 ## References
 
