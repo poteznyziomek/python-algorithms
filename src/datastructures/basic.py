@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any
+from dataclasses import dataclass
 
 class List(ABC):
     """Base class for implementations of abstract data type List.
@@ -15,7 +16,12 @@ class List(ABC):
 
     @abstractmethod
     def insert(self, x: Any, p: int) -> None:
-        """Insert x at position p in list."""
+        """Insert x at position p
+
+        Insert moves elements at p and following positions to the next
+        higher position. If p is end(), then x is appended to the end.
+        If there is no position p, then raise IndexError.
+        """
 
     @abstractmethod
     def locate(self, x: Any) -> int:
@@ -52,20 +58,25 @@ class List(ABC):
         Raise IndexError if p < 1 or p > end().
         """
     
-#    @abstractmethod
-#    def makenull(self):
-#        """Make list empty and return end(L)."""
-#
-#    @abstractmethod
-#    def first(self):
-#        """Return the first position."""
-#
-#    @abstractmethod
-#    def printlist(self):
-#        """Print the elements of L in the order of occurrence."""
+    @abstractmethod
+    def makenull(self) -> int:
+        """Make list empty and return end(L)."""
+
+    @abstractmethod
+    def first(self) -> int:
+        """Return the first position if nonempty, else end()."""
+
+    @abstractmethod
+    def printlist(self) -> None:
+        """Print the elements of L in the order of occurrence."""
 
 
+@dataclass
 class Array(List):
+    """Array implementation of the abstract data type List."""
+    elements: list[Any]
+    last: int
+    maxlength: int
 
     def __init__(self,
                  elements: list[Any] | None = None,
@@ -142,16 +153,19 @@ class Array(List):
             assert (elements is not None
                     and last is not None
                     and maxlength is not None)
-            if -2 < last < len(elements):
-                self.last = last
-            else:
-                raise ValueError(f"`last` cannot exceed {len(elements)-1}, " \
-                                 f"but {last=} supplied.")
             if maxlength < 0:
                 raise ValueError("`maxlength` must be nonnegative, " \
                                  f"but {maxlength=} supplied.")
             else:
                 self.maxlength = maxlength
+            if last < 0:
+                self.last = -1
+            elif 0 <= last < len(elements):
+                self.last = last
+            else:
+#                raise ValueError(f"`last` cannot exceed {len(elements)-1}, " \
+#                                 f"but {last=} supplied.")
+                self.last = len(elements) - 1
             if len(elements) >= maxlength:
                 self.elements = elements
             else:
@@ -163,12 +177,21 @@ class Array(List):
         return self.last + 1
     
     def insert(self, x: Any, p: int) -> None:
-        """Insert x at position p."""
-        if p > self.last + 1 or p < 0:
+        """Insert x at position p
+
+        Insert moves elements at p and following positions to the next
+        higher position. If p is end(), then x is appended to the end.
+        If there is no position p, then raise IndexError.
+        """
+        if self.last >= self.maxlength-1:
+            raise IndexError("Array is full.")
+        elif p > self.last + 1 or p < 0:
             raise IndexError(f"Position {p=} is out of range.")
         else:
-            for q in range(self.last, p-1, -1): # !!!Index last+1 DNE!!!
+            for q in range(self.last, p+1, -1):
                 self.elements[q+1] = self.elements[q]
+            self.last += 1
+            self.elements[p] = x
     
     def locate(self, x: Any) -> int:
         """Return the position of x.
@@ -221,3 +244,17 @@ class Array(List):
         if p < 1 or p > self.end():
             raise IndexError
         return p - 1
+
+    def makenull(self) -> int:
+        """Make list empty and return end."""
+        end = self.end()
+        self.last = -1
+        return end
+
+    def first(self) -> int:
+        """Return the first position if nonempty, else end()."""
+        return 0 if self.last >= 0 else self.end()
+
+    def printlist(self) -> None:
+        """Print the elements of L in the order of occurrence."""
+        print(self.elements[:self.last+1])

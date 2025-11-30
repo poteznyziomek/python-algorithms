@@ -4,11 +4,13 @@ import itertools
 import datastructures.basic as basic
 
 class ListDataStructure(unittest.TestCase):
+    def setUp(self):
+        self.k: int = 10
     
     def test_array_creation(self):
         """Invalid array creation should raise exception."""
         elements = [0, 5, 7, 7, 2, 1, 5, 6, 6, 4, 9, 0, 1, 5, 3, 2]
-        k = 10
+        k = self.k
 
         # No parameters supplied.
         # elements default to the empty list, last defaults to -1,
@@ -184,11 +186,7 @@ class ListDataStructure(unittest.TestCase):
                     ValueError, basic.Array,
                     elements=[], last=i, maxlength=j
                 )
-        for i,j in itertools.product(
-                set(range(-k,len(elements)))
-                | set(range(len(elements),len(elements)+k)),
-                repeat=2
-                ):
+        for i,j in itertools.product(range(-k,len(elements)+k),repeat=2):
             if -2 < i < len(elements) and 0 <= j <= len(elements):
                 self.assertEqual(
                     len(
@@ -227,6 +225,82 @@ class ListDataStructure(unittest.TestCase):
                     ).maxlength,
                     j
                 )
+            elif i >= len(elements) and 0 <= j <= len(elements):
+                self.assertEqual(
+                    len(
+                        basic.Array(
+                            elements=elements, last=i, maxlength=j
+                        ).elements
+                    ),
+                    len(elements)
+                )
+                self.assertEqual(
+                    basic.Array(elements=elements, last=i, maxlength=j).last,
+                    len(elements)-1
+                )
+                self.assertEqual(
+                    basic.Array(
+                        elements=elements, last=i, maxlength=j
+                    ).maxlength,
+                    j
+                )
+            elif i >= len(elements) and j > len(elements):
+                self.assertEqual(
+                    len(
+                        basic.Array(
+                            elements=elements, last=i, maxlength=j
+                        ).elements
+                    ),
+                    j
+                )
+                self.assertEqual(
+                    basic.Array(elements=elements, last=i, maxlength=j).last,
+                    len(elements)-1
+                )
+                self.assertEqual(
+                    basic.Array(
+                        elements=elements, last=i, maxlength=j
+                    ).maxlength,
+                    j
+                )
+            elif i <= -2 and 0 <= j <= len(elements):
+                self.assertEqual(
+                    len(
+                        basic.Array(
+                            elements=elements, last=i, maxlength=j
+                        ).elements
+                    ),
+                    len(elements)
+                )
+                self.assertEqual(
+                    basic.Array(elements=elements, last=i, maxlength=j).last,
+                    -1
+                )
+                self.assertEqual(
+                    basic.Array(
+                        elements=elements, last=i, maxlength=j
+                    ).maxlength,
+                    j
+                )
+            elif i <= -2 and j > len(elements):
+                self.assertEqual(
+                    len(
+                        basic.Array(
+                            elements=elements, last=i, maxlength=j
+                        ).elements
+                    ),
+                    j
+                )
+                self.assertEqual(
+                    basic.Array(elements=elements, last=i, maxlength=j).last,
+                    -1
+                )
+                self.assertEqual(
+                    basic.Array(
+                        elements=elements, last=i, maxlength=j
+                    ).maxlength,
+                    j
+                )
             else:
                 self.assertRaises(
                     ValueError, basic.Array,
@@ -239,21 +313,57 @@ class ListDataStructure(unittest.TestCase):
         """end should return last+1."""
         elements = [1, 6, 4, 4, 9, 3, 4, 0, 6, 6, 8, 4, 8, 2, 2, 6, 4]
         last = len(elements) - 1
+        k = self.k
         # No parameters supplied.
         self.assertEqual(basic.Array().end(), 0)
 
-        # One parameter supplied
+        # One or two parameter supplied
         self.assertEqual(basic.Array(elements=elements).end(), last+1)
-        self.assertEqual(basic.Array(last=-1).end(), 0)
+        for i in (set(range(-k,len(elements)))
+                  | set(range(len(elements),len(elements)+k))):
+            if i < 0:
+                self.assertEqual(basic.Array(last=i).end(), 0)
+            elif 0 <= i < len(elements):
+                self.assertRaises(ValueError, basic.Array, last=i)
+                self.assertEqual(basic.Array(elements=elements, last=i).end(),
+                                 i+1)
+            else: # i >= len(elements)
+               self.assertEqual(basic.Array(elements=elements, last=i).end(),
+                                len(elements))
 
-        # Both parameters supplied
-        for i in range(len(elements)):
-            self.assertEqual(basic.Array(elements=elements,last=i).end(),
-                             i+1)
+        # Three parameters supplied
+        for l,m in itertools.product(range(-k,len(elements)+k),
+                                     range(len(elements)+k)):
+            if l < 0:
+                self.assertEqual(
+                    basic.Array(elements=elements, last=l, maxlength=m).end(),
+                    0
+                )
+            elif 0 <= l < len(elements) and m < len(elements):
+                self.assertEqual(
+                    basic.Array(elements=elements, last=l, maxlength=m).end(),
+                    l+1)
+            elif len(elements) <= l and m < len(elements):
+                self.assertEqual(
+                    basic.Array(elements=elements, last=l, maxlength=m).end(),
+                    len(elements))
+            elif 0 <= l < len(elements) and m >= len(elements):
+                self.assertEqual(
+                    basic.Array(elements=elements, last=l, maxlength=m).end(),
+                    l+1
+                )
+            else: # 0 <= l < len(elements) and m >= len(elements)
+                self.assertEqual(
+                    basic.Array(elements=elements, last=l, maxlength=m).end(),
+                    len(elements)
+                )
 
-    @unittest.skip("Problem with max length of elements.")
     def test_array_insert(self):
-        """insert should insert x at valid position p.
+        """This method should insert x at valid position p.
+        
+        Valid positions are 0, 1, ..., end(), where end() <= maxlength.
+        Any attempt of calling this method on other positions raises
+        IndexError.
         """
         elements = [
             9, 1, 5, 9, 6, 5,
@@ -262,37 +372,39 @@ class ListDataStructure(unittest.TestCase):
             0, 5, 4, 6, 0, 3
         ]
         new = -9999
-        array = basic.Array(elements=elements)
+        k = self.k
 
-        # use .retrieve and .delete
+        # Try to insert to an array of maxlength equal 0.
+        for i in range(-k,k+1):
+            self.assertRaises(IndexError, basic.Array().insert, x=new, p=i)
 
-        # For i, 0 <= i <= last:
-        # 1. Insert x at position i.
-        # 2. Check if x is at position i (must be true).
-        # 3. Delete element at position i which is x.
-        # 4. Confirm element at position i is not x.
-        for i in range(array.end()):
-            array.insert(x=new, p=i)
-            self.assertEqual(array.retrieve(i), new)
-            array.delete(p=i)
-            self.assertNotEqual(array.retrieve(p=i), new)
-
-
-        # Insert x at position .end().
-        # Confirm x is at position last.
-        # Delete element at position last.
-        # Confirm that element at position last is not x.
-        array.insert(x=new, p=array.end())
-        self.assertEqual(array.retrieve(array.end()-1), new)
-        array.delete(p=array.end()-1)
-        self.assertNotEqual(array.retrieve(array.end()-1), new)
-
-        # For i, -k <= i <= -1 or .end() + 1 <= i <= .end() + 1 + k, where k is
-        # some positive integer:
-        # Assert that an exception is raised (index out of range).
-        k = 10
-        for i in set(range(-k,0)) | set(range(array.end()+1,array.end()+2+k)):
+        # Try to insert at invalid positions.
+        for i in range(len(elements)):
+            self.assertRaises(
+                IndexError,
+                basic.Array(
+                    elements=copy.deepcopy(elements), maxlength=i).insert,
+                x=new, p=i)
+        array = basic.Array(elements=elements, maxlength=len(elements)//2)
+        for i in (set(range(-k,0))
+                  | set(range(len(elements)//2, len(elements)//2+k))):
             self.assertRaises(IndexError, array.insert, x=new, p=i)
+
+        # Initialize empty array of maxlength k.
+        # Insert new element at the end until full.
+        array = basic.Array(maxlength=k)
+        for i in range(k):
+            array.insert(x=new, p=i)
+            self.assertEqual(array.elements[i], new)
+        self.assertRaises(IndexError, array.insert, x=new, p=k)
+
+        # Initialize empty array of maxlength k.
+        # Insert new element at the beginning until full.
+        array = basic.Array(maxlength=k)
+        for i in range(k):
+            array.insert(x=new, p=0)
+            self.assertEqual(array.elements[0], new)
+        self.assertRaises(IndexError, array.insert, x=new, p=0)
     
     def test_array_locate(self):
         """The locate method should return the position of x."""
@@ -301,8 +413,11 @@ class ListDataStructure(unittest.TestCase):
         sought = -999
 
         # x is not on the list
-        self.assertEqual(basic.Array(elements=[1, 2, 3, 4]).locate(x=sought),
-                         len([1, 2, 3, 4]))
+        k = self.k
+        for i in range(-k,len(elements)+k):
+            array = basic.Array(elements=[1, 2, 3, 4], last=i)
+            self.assertEqual(array.locate(x=sought),
+                             array.end())
         
         # x is on the list
         for x in elements:
@@ -310,7 +425,10 @@ class ListDataStructure(unittest.TestCase):
                              elements.index(x))
     
     def test_array_retrieve(self):
-        """This method should return the element at a given position."""
+        """This method should return the element at a given position.
+        
+        Raises Index Error if the given position is out range.
+        """
         elements = ['1', '0', '8', '2', '3', '2', '3', '2',
                     '3', '3', '7', '1', '1', '1', '3', '8']
         
@@ -320,7 +438,7 @@ class ListDataStructure(unittest.TestCase):
                              elements[i])
 
         # Position p is out of range.
-        k = 10
+        k = self.k
         for i in (set(range(-k,0))
                   | set(range(len(elements),len(elements)+k+1))):
             self.assertRaises(IndexError,
@@ -345,10 +463,9 @@ class ListDataStructure(unittest.TestCase):
         # Each time start with a fresh array
         for pos,val in positions.items():
             array = basic.Array(elements=copy.deepcopy(elements))
-            self.assertEqual(array.retrieve(p=pos), val)
+            self.assertEqual(array.elements[pos], val)
             array.delete(p=pos)
-            self.assertEqual(array.locate(x=val), array.end())
-            self.assertEqual(array.end()+1, len(elements))
+            self.assertNotIn(val, array.elements)
 
         # 1. Create an Array.
         # 2. Delete all elements from the end.
@@ -359,7 +476,7 @@ class ListDataStructure(unittest.TestCase):
         self.assertRaises(IndexError, array.delete, p=0)
 
         # Try to delete elements at positions which are out of range.
-        k = 10
+        k = self.k
         for i in (set(range(-k,0))
                 | set(range(len(elements),len(elements)+k+1))):
             self.assertRaises(IndexError,
@@ -374,7 +491,7 @@ class ListDataStructure(unittest.TestCase):
             self.assertEqual(basic.Array(elements=elements).next(p=i), i+1)
         
         # p out of range
-        k = 10
+        k = self.k
         for i in set(range(-k,0)) | set(range(len(elements),len(elements)+k)):
             self.assertRaises(IndexError,
                               basic.Array(elements=elements).next,
@@ -392,13 +509,35 @@ class ListDataStructure(unittest.TestCase):
             self.assertEqual(basic.Array(elements=elements).previous(p=i), i-1)
 
         # p out of range
-        k = 10
+        k = self.k
         for i in (set(range(-k,1))
                   | set(range(len(elements)+1, len(elements)+k+1))):
             self.assertRaises(IndexError,
                               basic.Array(elements=elements).previous,
                               p=i)
 
+    def test_array_makenull(self):
+        """This method should empty the list and return end().
+        
+        The underlying list object is not emptied, rather the `last`
+        is set to -1, which indicates the empty list.
+        """
+        elements = [0, 6, 2, 6, 6, 5, 7, 0, 6, 8, 6, 5, 7, 7, 5, 0, 1]
+        k = self.k
+        for i in range(len(elements)+k):
+            array = basic.Array(elements=elements, maxlength=i)
+            self.assertEqual(array.last+1, array.makenull())
+            self.assertEqual(array.last, -1)
+    
+    def test_array_first(self):
+        """This method should return the first position.
+        
+        If the list is empty it returns end().
+        """
+        # Empty.
+        self.assertEqual(basic.Array(maxlength=10).first(), 0)
+        # Nonempty.
+        self.assertEqual(basic.Array(elements=[1], maxlength=10).first(), 0)
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)
