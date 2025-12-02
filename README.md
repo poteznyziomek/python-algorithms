@@ -6,318 +6,198 @@ explore popular algorithms in depth.
 
 ## Table of contents
 
-1. [Package features](#package-features)
-2. [Introduction](#introduction)
-3. [Sorting algorithms](#sorting-algorithms)
+1. [Summary](#summary)
+<!-- 2. [Introduction](#introduction) -->
+2. [Sorting algorithms](#sorting-algorithms)
     1. [Insertion sort](#insertion-sort)
     2. [Selection sort](#selection-sort)
-4. [Search algorithms](#search-algorithms)
+3. [Search algorithms](#search-algorithms)
     1. [Binary search](#binary-search)
-5. [Misc. algorithms](#misc-algorithms)
-6. [References](#references)
+4. [Misc. algorithms](#misc-algorithms)
+5. [References](#references)
 
-## Package features
+## Summary
 
-Upon installation package offers a `Numbers` object which behaves like a
-Python's `list` object, i.e. it supports iteration, indexing, etc.
-`Numbers` class implements sorting algorithms.
+The package consists of two modules `datastructures` and `algorithms`. The
+former has a `basic` submodule in which an array implementation of the List
+abstract data type (ADT) is given. The `algorithms` module is currently under
+an overhaul.
 
-1. Install this package.
-2. Inside an environment or Python shell import the `algorithms.sorter` module.
-3. Now you have access to `Numbers` class.
+Additionally more theoretical notes are under preparation, which can be
+treated as a companion to this package.
 
-## Introduction
+<!-- ### Proposition. -->
 
-The analysis of all algorithms assumes the RAM model of computation.
+<!-- Let $`R := \left\{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\right\}`$. -->
+<!-- The set $`R`$ is an equivalence relation in $`\mathbb{R}^{\mathbb{N}}`$. -->
+<!--  -->
+<!-- *Proof.* We need to show that $`R`$ is reflexive, symmetric and transitive. -->
+<!-- Reflexivity is trivial. To show symmetry assume $`f \in \Theta(g)`$. Then there -->
+<!-- are $`\alpha, \beta > 0`$, $`n_0 \in \mathbb{N}`$ such that  -->
+<!-- $`n \ge n_0 \implies 0 \le \alpha g(n) \le f(n) \le \beta g(n)`$ for all $`n \in \mathbb{N}`$. -->
+<!-- Also we have -->
+<!-- ```math -->
+<!--      0 \le \frac{1}{\beta} f(n) \le g(n) \le \frac{1}{\alpha} f(n), -->
+<!-- ``` -->
+<!-- which means $`g \in \Theta(f)`$. Now assume that $`f \in \Theta(g)`$ and $`g \in \Theta(h)`$. -->
+<!-- Then there are $`\alpha_1, \alpha_2, \beta_1, \beta_2 > 0`$ and $`n_f, n_g \in \mathbb{N}`$ -->
+<!-- such that -->
+<!-- ```math -->
+<!--     n \ge n_f \implies 0 \le \alpha_1 g(n) \le f(n) \le \alpha_2 g(n) -->
+<!-- ``` -->
+<!-- and -->
+<!-- ```math -->
+<!--     n \ge n_g \implies 0 \le \beta_1 g(n) \le f(n) \le \beta_2 g(n). -->
+<!-- ``` -->
+<!-- It is easy to see that -->
+<!-- ```math -->
+<!-- n \ge \max\{n_f, n_g\} \implies 0 \le \alpha_1 \beta_1 h(n) \le \alpha_1 g(n) \le f(n) \le \alpha_2 g(n) \le \alpha_2 \beta_2 h(n). -->
+<!-- ``` -->
+<!-- From the above we conclude that $`f \in \Theta(h)`$ and the statement is proven. -->
+<!-- $`\square`$ -->
 
-### Definition. ($`O`$-notation (big-oh))
+<!-- For a given function $`f \in \mathbb{R}^{\mathbb{N}}`$ we define its -->
+<!-- equivalence class as -->
+<!-- ```math -->
+<!--     [f]_R := \left\{g \in \mathbb{R}^{\mathbb{N}} : (g, f) \in R\right\} = \left\{g \in \mathbb{R}^{\mathbb{N}} : g \in \Theta(f)\right\}. -->
+<!-- ``` -->
+<!-- Note that for $`f, g : \mathbb{N} \to \mathbb{R}`$ it is either -->
+<!-- $`[f]_R \cap [g]_R = \emptyset`$ or $`[f]_R = [g]_R`$. -->
 
-Let a function $`g : \mathbb{N} \to \mathbb{R}`$ be given. Then
-```math
-    O(g(n)) := \left\{f \in \mathbb{R}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) \le cg(n))\right\}.
-```
-> The shape of the above definition suggests that the $`n`$ in the $`O(g(n))`$ is
-> fixed, i.e. for different $`n`$ the set on the right hand side might possibly
-> consist of different functions. This is not the case. It's just a way the
-> authors in the Cormen book [[1]](#cormen) have stated it. To be more correct
-> one should avoid the parenthesis and the $`n`$ as in $`O(g)`$, and when $`g`$ is
-> annonymous: $`O(n \mapsto g(n))`$ (not a fan of the last one).
-
-According to the definition above a function $`f \in O(g)`$ (or $`f \in O(g(n))`$ if 
-one wishes) iff there is some $`c > 0`$ such that beginning at some point ($`n_0`$)
-the inequality $`0 \le f(n) \le cg(n)`$ holds for all $`n`$ ($`n \ge n_0`$).
-
-### Definition. ($`\Omega`$-notation)
-
-Suppose a function $`g : \mathbb{N} \to \mathbb{R}`$ is given. Then
-```math
-    \Omega(g(n)) := \left\{f \in \mathbb{R}^{\mathbb{N}} : (\exists c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) \le f(n))\right\}.
-```
-
-### Definition. ($`\Theta`$-notation)
-
-For a given function $`g : \mathbb{N} \to \mathbb{R}`$ we define
-```math
-    \Theta(g(n)) := \left\{f \in \mathbb{R}^{\mathbb{N}} : (\exists c_1 > 0)(\exists c_2 > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le c_1g(n) \le f(n) \le c_2g(n))\right\}.
-```
-
-Obviously $`\Theta(g) \subset O(g) \cap \Omega(g)`$. To show the inclusion in the
-other direction suppose that $`f \in O(g) \cap \Omega(g)`$. Then there is $`c_1 > 0`$
-such that $`0 \le f(n) \le c_1g(n)`$ for all $`n \ge n_1`$ and there is $`c_2 > 0`$
-such that $`0 \le c_2g(n) \le f(n)`$ for all $`n \ge n_2`$. We conclude that 
-$`0 \le c_2g(n) \le f(n) \le c_1g(n)`$ for all $`n \ge N`$, where $`N = \max\{n_1, n_2\}`$.
-Hence $`\Theta(g) = O(g) \cap \Omega(g)`$.
-
-Also note that $`(\forall c > 0)(O(c) = O(1))`$. To see this fix $`c > 0`$ and
-$`f \in O(c)`$. This implies that there is $`\varepsilon > 0`$ such that
-$`0 \le f(n) \le \varepsilon c`$ for all $`n \ge n_1`$. Since
-$`\varepsilon c \cdot 1 = \varepsilon c > 0`$ we conclude $`f \in O(1)`$. Now
-suppose $`f \in O(1)`$ i.e. there is $`\varepsilon > 0`$ such that $`0 \le f(n) \le \varepsilon`$
-for all $`n \ge n_0`$, then if we set $`\eta = \varepsilon / c`$ the inequality
-$`0 \le f(n) \le \eta c`$ is satisfied for all $`n \ge n_0`$. Since $`c > 0`$ was
-arbitrarily chosen we conclude that the statement is proven.
-
-Using similar arguments one can see that $`(\forall c > 0)(\Omega(c) = \Omega(1))`$
-and $`(\forall c > 0)(\Theta(c) = \Theta(1))`$.
-
-Each member of $`O(1)`$ is a bounded function.
-
-### Definition. ($`o`$-notation (little-oh))
-
-Let $`g: \mathbb{N} \to \mathbb{R}`$ be given. Then
-```math
-    o(g(n)) = \left\{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le f(n) < cg(n))\right\}.
-```
-Recall the usual definition of a limit of a sequence. Let $`f : \mathbb{N} \to \mathbb{R}`$
-and $`L \in \mathbb{R}`$. If the following condition is satisfied:
-```math
-    (\forall c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies \vert f(n) - L \vert < c),
-```
-then we say that $`L`$ is the limit of a sequence $`f`$ and write
-```math
-    L \in \lim\limits_{n\to\infty} f(n).
-```
-Suppose $`L_1, L_2 \in \lim_{n\to\infty} f(n)`$. Then for arbitrarily
-chosen $`c / 2 > 0`$ there are $`n_1, n_2 \in \mathbb{N}`$ such that $`n \ge n_1 \implies \vert f(n) - L_1 \vert < c / 2`$ and $`n \ge n_2 \implies \vert f(n) - L_2 \vert < c / 2`$ for all $`n \in \mathbb{N}`$.
-We have
-```math
-    \vert L_1 - L_2 \vert = \vert f(n) - L_2 - (f(n) - L_1) \vert \le \vert f(n) - L_2 \vert + \vert f(n) - L_1 \vert < \frac{c}{2} + \frac{c}{2} = c
-```
-for all $`n \in \mathbb{N}`$ such that $`n \ge \max\{n_1, n_2\}`$. Since $`c`$ was
-arbitrarily chosen we conclude that $`L_1 = L_2`$. In other words if the limit of
-the sequence exists, it is unique. We can then write $`L = \lim_{n\to\infty} f(n)`$
-for the limit instead of $`L \in \lim_{n\to\infty} f(n)`$.
-
-We say that a sequence converges if there is the limit of this sequence. Next, we
-can define **weak convergence under condition**: let $`f : \mathbb{N} \to \mathbb{R}`$ be
-a sequence and let $`w : f[\mathbb{N}] \to \{\top, \bot\}`$ be a condition. Then
-we say that $`f`$ converges weakly under the condition $`w`$ if there is a number $`L \in \mathbb{R}`$
-such that:
-```math
-    (\forall c > 0)(\exists n_0 \in \mathbb{N})(\forall n \in \mathbb{N})(n \ge n_0 \implies (\vert f(n) - L \vert < c \wedge w(f(n)) = \top)),
-```
-and write
-```math
-    L = \lim\limits_{n\to\infty, w(f(n))} f(n).
-```
-The word weak is used to emphasize that the condition need not to be satisfied
-for the first terms of the sequence.
-
-Using the notion of weak conditional convergence we can reformulate the definition of
-the set $`o(\cdot)`$ in the following way:
-```math
-    o(g) = \left\{f \in \mathbb{R}^{\mathbb{N}} : \lim\limits_{n\to\infty, \frac{f(n)}{g(n)}\cdot g(n) > 0} \frac{f(n)}{g(n)} = 0 \right\}.
-```
-
-### Definition. ($`\omega`$-notation)
-
-For a given function $`g : \mathbb{N} \to \mathbb{R}`$ we define
-```math
-    \omega(g(n)) := \left\{f \in \mathbb{R}^{\mathbb{N}} : (\forall c > 0)(\exists n_0 > 0)(\forall n \in \mathbb{N})(n \ge n_0 \implies 0 \le cg(n) < f(n))\right\}.
-```
-Note that $`f \in \omega(g)`$ iff $`g \in o(f)`$. For example if $`f \in \omega(g)`$,
-then for any choice of $`c_1 > 0`$ the inequality $`0 \le cg(n) < f(n)`$ is
-satisfied for all sufficiently large $`n \in \mathbb{N}`$. For the same large $`n`$
-the inequality $`0 \le g(n) < c_2f(n)`$, where $`c_2 = 1/c_1`$ is also true, hence
-$`g \in o(f)`$. The implication in the other direction is similar. This means
-that $`\omega`$ can be defined using previously defined $`o`$:
-```math
-    \omega(g) := \left\{f \in \mathbb{R}^{\mathbb{N}} : g \in o(f)\right\}.
-```
-As we've shown before these definitions are equivalent.
-
-### Proposition.
-
-Let $`R := \left\{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\right\}`$.
-The set $`R`$ is an equivalence relation in $`\mathbb{R}^{\mathbb{N}}`$.
-
-*Proof.* We need to show that $`R`$ is reflexive, symmetric and transitive.
-Reflexivity is trivial. To show symmetry assume $`f \in \Theta(g)`$. Then there
-are $`\alpha, \beta > 0`$, $`n_0 \in \mathbb{N}`$ such that 
-$`n \ge n_0 \implies 0 \le \alpha g(n) \le f(n) \le \beta g(n)`$ for all $`n \in \mathbb{N}`$.
-Also we have
-```math
-    0 \le \frac{1}{\beta} f(n) \le g(n) \le \frac{1}{\alpha} f(n),
-```
-which means $`g \in \Theta(f)`$. Now assume that $`f \in \Theta(g)`$ and $`g \in \Theta(h)`$.
-Then there are $`\alpha_1, \alpha_2, \beta_1, \beta_2 > 0`$ and $`n_f, n_g \in \mathbb{N}`$
-such that
-```math
-    n \ge n_f \implies 0 \le \alpha_1 g(n) \le f(n) \le \alpha_2 g(n)
-```
-and
-```math
-    n \ge n_g \implies 0 \le \beta_1 g(n) \le f(n) \le \beta_2 g(n).
-```
-It is easy to see that
-```math
-n \ge \max\{n_f, n_g\} \implies 0 \le \alpha_1 \beta_1 h(n) \le \alpha_1 g(n) \le f(n) \le \alpha_2 g(n) \le \alpha_2 \beta_2 h(n).
-```
-From the above we conclude that $`f \in \Theta(h)`$ and the statement is proven.
-$`\square`$
-
-For a given function $`f \in \mathbb{R}^{\mathbb{N}}`$ we define its
-equivalence class as
-```math
-    [f]_R := \left\{g \in \mathbb{R}^{\mathbb{N}} : (g, f) \in R\right\} = \left\{g \in \mathbb{R}^{\mathbb{N}} : g \in \Theta(f)\right\}.
-```
-Note that for $`f, g : \mathbb{N} \to \mathbb{R}`$ it is either
-$`[f]_R \cap [g]_R = \emptyset`$ or $`[f]_R = [g]_R`$.
-
-### Examples
-
-1.
-For each $`k = 1, 2, \dots`$ consider the functions
-$`f_k : \mathbb{N} \to \mathbb{N}`$ defined as $`f_k(n) = n^k`$. Fix
-$`k, l \in \mathbb{N}`$, $`k < l`$. We'll show that
-$`\Theta\left(n^l\right) \cap \Theta\left(n^k\right) = \emptyset`$. Take
-$`f \in \Theta\left(n^l\right)`$. Then there are
-$`\alpha, \beta > 0`$ and $`N \in \mathbb{N}`$ such that
-```math
-    n \ge N \implies 0 \le \alpha n^l \le f(n) \le \beta n^l
-```
-for all $`n \in \mathbb{N}`$. Suppose there are $`\gamma, \delta > 0`$ and
-$`M \in \mathbb{N}`$ such that
-```math
-    n \ge M \implies 0 \le \gamma n^k \le f(n) \le \delta n^k.
-```
-It cannot be that $`\alpha n^l \le \gamma n^k`$, because then $`n^{l-k} \le \gamma / \alpha`$,
-which means that the function $`n \mapsto n^{l-k}`$ is bounded, so it must be
-$`\gamma n^k \le \alpha n^l`$. Similarly it must be that $`\delta n^k \le \beta n^l`$.
-With this we obtain
-```math
-    n \ge \max\{N, M\} \implies 0 \le \gamma n^k \le \alpha n^l \le f(n) \le \delta n^k \le \beta n^l
-```
-for all $`n \in \mathbb{N}`$. But for the same reason discussed above it is not
-possible that $`\gamma n^k \le \beta n^l`$ or $`\alpha n^l \le \delta n^k`$. Thus
-$`f \notin \Theta(n^k)`$. Since $`\Theta(n^l)`$ and $`\Theta(n^k)`$ differ by at least
-one element they must be disjoint.
-
-2.
-Fix two functions $`f, g : \mathbb{N} \to \mathbb{R}`$. Then $`\max\{f, g\} \in \Theta(f + g)`$.
-Assume that for sufficiently large $`n \in \mathbb{N}`$ the sum $`f + g`$ is positive.
-Otherwise if $`f + g < 0`$, then $`\Theta(f + g) = \emptyset`$. The case where $`f + g = 0`$
-is also troublesome. First of all $`\Theta(n \mapsto 0) = \{n \mapsto 0\}`$ - in
-other words the only member is the zero function (a function that maps $`0`$ to every
-argument). Suppose that $`f > 0`$ and $`g = -f`$ for sufficiently large $`n`$, then
-$`\max\{f, g\} = f`$ and $`f \notin \Theta(f + g)`$. Assume that $`f`$ and $`g`$ are
-chosen so that their sum is positive for sufficiently large $`n`$. Then
-```math
-    0 \le \frac{1}{2}(f + g) \le \max\{f, g\} \le f + g
-```
-for sufficiently large $`n`$ and we conclude that $`\max\{f, g\} \in \Theta(f + g)`$.
-
-3.
-Consider the algebra $`(\mathbb{R}; +, \cdot, -, 0, 1)`$ with the usual binary
-operations $`+, \cdot`$, unary operation $`-`$ (additive inverse) and two constants
-$`0`$ and $`1`$. From this we can construct the cartesian power
-```math
-    (\mathbb{R}; +, \cdot, -, 0, 1)^{\mathbb{N}} = \left(\mathbb{R}^{\mathbb{N}}; F_1, F_2, F_3, c_1, c_2\right),
-```
-where the operations are defined as follows:
-```math
-    F_1(f, g)(n) := f(n) + g(n),\ n \in \mathbb{N},
-```
-```math
-    F_2(f, g)(n) := f(n) \cdot g(n),\ n \in \mathbb{N},
-```
-```math
-    F_3(f)(n) := -f(n), \ n \in \mathbb{N},
-```
-```math
-    c_1(n) := 0,\ n \in \mathbb{N},
-```
-```math
-    c_2(n) := 1,\ n \in \mathbb{N}
-```
-for all $`f, g \in \mathbb{R}^{\mathbb{N}}`$.
-
-> Note.
->
-> Let $`\left(A; \{f_t\}_{t\in T}\right)`$ be an algebra. If $`f_t : A^{n_t} \to A`$,
-> where $`n_t \in \mathbb{N}`$ for some $`t \in T`$ then $`n_t`$ is called
-> the **arity** of $`f_t`$ and we write $`\mathrm{arity} f_t = n_t`$.
-
-Let $`R := \left\{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\right\}`$
-be the equivalence relation defined before. Fix an operation from the cartesian
-product defined above and call it $`F`$. Let $`n = \mathrm{arity} F`$. If the
-following condition
-```math
-    (\forall f_1, \dots, f_n, f_1',\dots, f_n' \in \mathbb{R}^{\mathbb{N}}) \left(((f_1, f_1') \in R \wedge \dots \wedge (f_n, f_n') \in R) \implies (F(f_1, \dots, f_n), F(f_1', \dots, f_n')) \in R\right)
-```
-is satisfied, then we say that the relation $`R`$ is compatible with the
-operation $`F`$. If the relation $`R`$ is compatible with every operation in
-the algebra then we say that $`R`$ is a congruence of this algebra. With a
-congruence we can introduce an algebraic structure on the set
-$`\mathbb{R}^{\mathbb{N}} / R := \left\{[f]_R : f \in \mathbb{R}^{\mathbb{N}}\right\}`$.
-
-Let's check whether $`R`$ is compatible with $`F_1`$ (i.e. addition) and
-$`F_2`$ (i.e. multiplication). Assume that $`f_1 \in \Theta(f_1')`$ and
-$`f_2 \in \Theta(f_2')`$, then there are
-$`\alpha, \beta, \gamma, \delta > 0`$, $`n_1, n_2 \in \mathbb{N}`$ such that
-```math
-    n \ge n_1 \implies 0 \le \alpha f_1'(n) \le f_1(n) \le \beta f_1'(n)
-```
-and
-
-```math
-    n \ge n_2 \implies 0 \le \gamma f_2'(n) \le f_2(n) \le \delta f_2'(n)
-```
-for all $`n \in \mathbb{N}`$. Now let $`\xi = \min\{\alpha, \gamma\}`$,
-$`\eta = \max\{\beta, \delta\}`$, $`N = \max\{n_1, n_2\}`$. Then for all $`n \in \mathbb{N}`$
-```math
-    n \ge N \implies \xi(f_1'(n) + f_2'(n)) \le f_1(n) + f_2(n) \le \eta(f_1'(n) + f_2'(n)).
-```
-Hence $`F_1(f_1, f_2) \in \Theta\left(F_1(f_1', f_2')\right)`$. If for the same
-$`\alpha, \beta, \gamma, \delta, n_1, n_2`$ one chooses $`\xi = \alpha \gamma`$,
-$`\eta = \beta \delta`$, $`N = \max\{n_1, n_2\}`$, then
-```math
-    n \ge N \implies \xi f_1'(n) f_2'(n) \le f_1(n) f_2(n) \le \eta f_1'(n) f_2'(n)
-```
-for all $`n \in \mathbb{N}`$. Thus $`F_2(f_1, f_2) \in \Theta\left(F_2(f_1', f_2')\right)`$.
-
-Unfortunately $`R`$ is not compatible with $`F_3`$ (i.e. taking an additive inverse).
-For example $`n \mapsto n \in \Theta(n \mapsto n)`$, but $`\Theta(n \mapsto -n) = \emptyset`$.
-
-4.
-To see that $`n \mapsto 2^{n+1} \in O(n \mapsto 2^n)`$ pick any $`c \ge 2`$ in
-the definition of the set $`O(\cdot)`$. On the other hand $`n \mapsto 2^{2n} \notin O(n \mapsto 2^n)`$, otherwise it would mean that the function $`n \mapsto 2^n`$ is bounded.
-
-5.
-The sets $`o(g)`$ and $`\omega(g)`$ are disjoint. Take $`f \in o(g) \cap \omega(g)`$.
-This means that for a fixed $`c > 0`$ there are $`n_1, n_2 > 0`$ such that
-```math
-    n \ge n_1 \implies 0 \le c g(n) < f(n)
-```
-and
-```math
-    n \ge n_2 \implies 0 \le f(n) < c g(n)
-```
-for all $`n \in \mathbb{N}`$. But then it would have to be that
-```math
-    n \ge \max\{n_1, n_2\} \implies 0 \le c g(n) < f(n) < c g(n)
-```
-for all $`n \in \mathbb{N}`$, which is not possible, hence $`f \in o(g) \cap \omega(g) = \emptyset`$.
+<!-- ### Examples -->
+<!--  -->
+<!-- 1. -->
+<!-- For each $`k = 1, 2, \dots`$ consider the functions -->
+<!-- $`f_k : \mathbb{N} \to \mathbb{N}`$ defined as $`f_k(n) = n^k`$. Fix -->
+<!-- $`k, l \in \mathbb{N}`$, $`k < l`$. We'll show that -->
+<!-- $`\Theta\left(n^l\right) \cap \Theta\left(n^k\right) = \emptyset`$. Take -->
+<!-- $`f \in \Theta\left(n^l\right)`$. Then there are -->
+<!-- $`\alpha, \beta > 0`$ and $`N \in \mathbb{N}`$ such that -->
+<!-- ```math -->
+<!--     n \ge N \implies 0 \le \alpha n^l \le f(n) \le \beta n^l -->
+<!-- ``` -->
+<!-- for all $`n \in \mathbb{N}`$. Suppose there are $`\gamma, \delta > 0`$ and -->
+<!-- $`M \in \mathbb{N}`$ such that -->
+<!-- ```math -->
+<!--     n \ge M \implies 0 \le \gamma n^k \le f(n) \le \delta n^k. -->
+<!-- ``` -->
+<!-- It cannot be that $`\alpha n^l \le \gamma n^k`$, because then $`n^{l-k} \le \gamma / \alpha`$, -->
+<!-- which means that the function $`n \mapsto n^{l-k}`$ is bounded, so it must be -->
+<!-- $`\gamma n^k \le \alpha n^l`$. Similarly it must be that $`\delta n^k \le \beta n^l`$. -->
+<!-- With this we obtain -->
+<!-- ```math -->
+<!--     n \ge \max\{N, M\} \implies 0 \le \gamma n^k \le \alpha n^l \le f(n) \le \delta n^k \le \beta n^l -->
+<!-- ``` -->
+<!-- for all $`n \in \mathbb{N}`$. But for the same reason discussed above it is not -->
+<!-- possible that $`\gamma n^k \le \beta n^l`$ or $`\alpha n^l \le \delta n^k`$. Thus -->
+<!-- $`f \notin \Theta(n^k)`$. Since $`\Theta(n^l)`$ and $`\Theta(n^k)`$ differ by at least -->
+<!-- one element they must be disjoint. -->
+<!--  -->
+<!-- 2. -->
+<!-- Fix two functions $`f, g : \mathbb{N} \to \mathbb{R}`$. Then $`\max\{f, g\} \in \Theta(f + g)`$. -->
+<!-- Assume that for sufficiently large $`n \in \mathbb{N}`$ the sum $`f + g`$ is positive. -->
+<!-- Otherwise if $`f + g < 0`$, then $`\Theta(f + g) = \emptyset`$. The case where $`f + g = 0`$ -->
+<!-- is also troublesome. First of all $`\Theta(n \mapsto 0) = \{n \mapsto 0\}`$ - in -->
+<!-- other words the only member is the zero function (a function that maps $`0`$ to every -->
+<!-- argument). Suppose that $`f > 0`$ and $`g = -f`$ for sufficiently large $`n`$, then -->
+<!-- $`\max\{f, g\} = f`$ and $`f \notin \Theta(f + g)`$. Assume that $`f`$ and $`g`$ are -->
+<!-- chosen so that their sum is positive for sufficiently large $`n`$. Then -->
+<!-- ```math -->
+<!--     0 \le \frac{1}{2}(f + g) \le \max\{f, g\} \le f + g -->
+<!-- ``` -->
+<!-- for sufficiently large $`n`$ and we conclude that $`\max\{f, g\} \in \Theta(f + g)`$. -->
+<!--  -->
+<!-- 3. -->
+<!-- Consider the algebra $`(\mathbb{R}; +, \cdot, -, 0, 1)`$ with the usual binary -->
+<!-- operations $`+, \cdot`$, unary operation $`-`$ (additive inverse) and two constants -->
+<!-- $`0`$ and $`1`$. From this we can construct the cartesian power -->
+<!-- ```math -->
+<!--     (\mathbb{R}; +, \cdot, -, 0, 1)^{\mathbb{N}} = \left(\mathbb{R}^{\mathbb{N}}; F_1, F_2, F_3, c_1, c_2\right), -->
+<!-- ``` -->
+<!-- where the operations are defined as follows: -->
+<!-- ```math -->
+<!--     F_1(f, g)(n) := f(n) + g(n),\ n \in \mathbb{N}, -->
+<!-- ``` -->
+<!-- ```math -->
+<!--     F_2(f, g)(n) := f(n) \cdot g(n),\ n \in \mathbb{N}, -->
+<!-- ``` -->
+<!-- ```math -->
+<!--     F_3(f)(n) := -f(n), \ n \in \mathbb{N}, -->
+<!-- ``` -->
+<!-- ```math -->
+<!--     c_1(n) := 0,\ n \in \mathbb{N}, -->
+<!-- ``` -->
+<!-- ```math -->
+<!--     c_2(n) := 1,\ n \in \mathbb{N} -->
+<!-- ``` -->
+<!-- for all $`f, g \in \mathbb{R}^{\mathbb{N}}`$. -->
+<!--  -->
+<!-- > Note. -->
+<!-- > -->
+<!-- > Let $`\left(A; \{f_t\}_{t\in T}\right)`$ be an algebra. If $`f_t : A^{n_t} \to A`$, -->
+<!-- > where $`n_t \in \mathbb{N}`$ for some $`t \in T`$ then $`n_t`$ is called -->
+<!-- > the **arity** of $`f_t`$ and we write $`\mathrm{arity} f_t = n_t`$. -->
+<!--  -->
+<!-- Let $`R := \left\{(f, g) \in \mathbb{R}^{\mathbb{N}} \times \mathbb{R}^{\mathbb{N}} : f \in \Theta(g)\right\}`$ -->
+<!-- be the equivalence relation defined before. Fix an operation from the cartesian -->
+<!-- product defined above and call it $`F`$. Let $`n = \mathrm{arity} F`$. If the -->
+<!-- following condition -->
+<!-- ```math -->
+<!--     (\forall f_1, \dots, f_n, f_1',\dots, f_n' \in \mathbb{R}^{\mathbb{N}}) \left(((f_1, f_1') \in R \wedge \dots \wedge (f_n, f_n') \in R) \implies (F(f_1, \dots, f_n), F(f_1', \dots, f_n')) \in R\right) -->
+<!-- ``` -->
+<!-- is satisfied, then we say that the relation $`R`$ is compatible with the -->
+<!-- operation $`F`$. If the relation $`R`$ is compatible with every operation in -->
+<!-- the algebra then we say that $`R`$ is a congruence of this algebra. With a -->
+<!-- congruence we can introduce an algebraic structure on the set -->
+<!-- $`\mathbb{R}^{\mathbb{N}} / R := \left\{[f]_R : f \in \mathbb{R}^{\mathbb{N}}\right\}`$. -->
+<!--  -->
+<!-- Let's check whether $`R`$ is compatible with $`F_1`$ (i.e. addition) and -->
+<!-- $`F_2`$ (i.e. multiplication). Assume that $`f_1 \in \Theta(f_1')`$ and -->
+<!-- $`f_2 \in \Theta(f_2')`$, then there are -->
+<!-- $`\alpha, \beta, \gamma, \delta > 0`$, $`n_1, n_2 \in \mathbb{N}`$ such that -->
+<!-- ```math -->
+<!--     n \ge n_1 \implies 0 \le \alpha f_1'(n) \le f_1(n) \le \beta f_1'(n) -->
+<!-- ``` -->
+<!-- and -->
+<!--  -->
+<!-- ```math -->
+<!--     n \ge n_2 \implies 0 \le \gamma f_2'(n) \le f_2(n) \le \delta f_2'(n) -->
+<!-- ``` -->
+<!-- for all $`n \in \mathbb{N}`$. Now let $`\xi = \min\{\alpha, \gamma\}`$, -->
+<!-- $`\eta = \max\{\beta, \delta\}`$, $`N = \max\{n_1, n_2\}`$. Then for all $`n \in \mathbb{N}`$ -->
+<!-- ```math -->
+<!--     n \ge N \implies \xi(f_1'(n) + f_2'(n)) \le f_1(n) + f_2(n) \le \eta(f_1'(n) + f_2'(n)). -->
+<!-- ``` -->
+<!-- Hence $`F_1(f_1, f_2) \in \Theta\left(F_1(f_1', f_2')\right)`$. If for the same -->
+<!-- $`\alpha, \beta, \gamma, \delta, n_1, n_2`$ one chooses $`\xi = \alpha \gamma`$, -->
+<!-- $`\eta = \beta \delta`$, $`N = \max\{n_1, n_2\}`$, then -->
+<!-- ```math -->
+<!--     n \ge N \implies \xi f_1'(n) f_2'(n) \le f_1(n) f_2(n) \le \eta f_1'(n) f_2'(n) -->
+<!-- ``` -->
+<!-- for all $`n \in \mathbb{N}`$. Thus $`F_2(f_1, f_2) \in \Theta\left(F_2(f_1', f_2')\right)`$. -->
+<!--  -->
+<!-- Unfortunately $`R`$ is not compatible with $`F_3`$ (i.e. taking an additive inverse). -->
+<!-- For example $`n \mapsto n \in \Theta(n \mapsto n)`$, but $`\Theta(n \mapsto -n) = \emptyset`$. -->
+<!--  -->
+<!-- 4. -->
+<!-- To see that $`n \mapsto 2^{n+1} \in O(n \mapsto 2^n)`$ pick any $`c \ge 2`$ in -->
+<!-- the definition of the set $`O(\cdot)`$. On the other hand $`n \mapsto 2^{2n} \notin O(n \mapsto 2^n)`$, otherwise it would mean that the function $`n \mapsto 2^n`$ is bounded. -->
+<!--  -->
+<!-- 5. -->
+<!-- The sets $`o(g)`$ and $`\omega(g)`$ are disjoint. Take $`f \in o(g) \cap \omega(g)`$. -->
+<!-- This means that for a fixed $`c > 0`$ there are $`n_1, n_2 > 0`$ such that -->
+<!-- ```math -->
+<!--     n \ge n_1 \implies 0 \le c g(n) < f(n) -->
+<!-- ``` -->
+<!-- and -->
+<!-- ```math -->
+<!--     n \ge n_2 \implies 0 \le f(n) < c g(n) -->
+<!-- ``` -->
+<!-- for all $`n \in \mathbb{N}`$. But then it would have to be that -->
+<!-- ```math -->
+<!--     n \ge \max\{n_1, n_2\} \implies 0 \le c g(n) < f(n) < c g(n) -->
+<!-- ``` -->
+<!-- for all $`n \in \mathbb{N}`$, which is not possible, hence $`f \in o(g) \cap \omega(g) = \emptyset`$. -->
 
 ## Sorting algorithms
 
