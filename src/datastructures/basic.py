@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from typing import Any
 from dataclasses import dataclass
 
@@ -149,7 +150,6 @@ class Array(List):
             self.elements = list(range(maxlength))
 
         else: # each argument is supplied
-        #elif elements is not None and last is not None and maxlength is not None:
             assert (elements is not None
                     and last is not None
                     and maxlength is not None)
@@ -163,8 +163,6 @@ class Array(List):
             elif 0 <= last < len(elements):
                 self.last = last
             else:
-#                raise ValueError(f"`last` cannot exceed {len(elements)-1}, " \
-#                                 f"but {last=} supplied.")
                 self.last = len(elements) - 1
             if len(elements) >= maxlength:
                 self.elements = elements
@@ -258,3 +256,92 @@ class Array(List):
     def printlist(self) -> None:
         """Print the elements of L in the order of occurrence."""
         print(self.elements[:self.last+1])
+
+@dataclass
+class Node:
+    element: Any | None = None
+    nxt: Any | None = None
+
+
+@dataclass
+class SLinkedList(List):
+    """Pointer implementation of the abstract data type List."""
+    head: Node
+    tail: Node | None
+    def __init__(self, elements: Sequence[Any] | None = None):
+        """Singly-linked list.
+        
+        [ | ] -> [a0 | ] -> [a1 | ] -> ... -> [an | .]
+        ^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        head                 list
+        The list is made up of cells, each cell consisting of an element
+        of the list and a pointer to the next cell on the list. The cell
+        [ai | ] holding the element ai has a pointer (in the field
+        after the pipe `|` character) to the cell holding a{i+1} for
+        i = 0, 2, ..., n-1. The cell [an | .] holding an has a None
+        pointer. The `head` cell [ | ] points to the cell holding a0;
+        the head holds no element.
+        The position i is a pointer to the cell holding the pointer to
+        ai for i = 1, 2, ..., n. Position 0 is a pointer to the head,
+        and position end() is a pointer to the last cell.
+        """
+        if elements:
+            self.tail = self.make_list(len(elements), elements)
+        else:
+            self.tail = None
+        self.head = Node(None, self.tail)
+
+    
+    def make_list(self, x: int, L: Sequence[Any]) -> Node | None:
+        return Node(L[-x], self.make_list(x-1, L)) if 0 < x <= len(L) else None
+
+
+    def end(self) -> int: # type: ignore
+        """Return the position following n in an n-element list."""
+
+    def insert(self, x: Any, p: int) -> None:
+        """Insert x at position p
+
+        Insert moves elements at p and following positions to the next
+        higher position. If p is end(), then x is appended to the end.
+        If there is no position p, then raise IndexError.
+        """
+
+    def locate(self, x: Any) -> int: # type: ignore
+        """Return the position of x.
+
+        If x appears more than once, then the position of the first
+        occurence is returned. If x does not appear at all, then end()
+        is returned.
+        """
+    
+    def retrieve(self, p: int) -> Any: # type: ignore
+        """Return the element at position p.
+        
+        If p is out of range, then raise IndexError.
+        """
+    
+    def delete(self, p: int) -> None: # type: ignore
+        """Delete the element at position p."""
+    
+    def next(self, p: int) -> int: # type: ignore
+        """Return the position following position p.
+
+        If p is the last position, then return end().
+        Raise IndexError if p is out of range.
+        """
+    
+    def previous(self, p: int) -> int: # type: ignore
+        """Return the position preceding position p.
+        
+        Raise IndexError if p < 1 or p > end().
+        """
+    
+    def makenull(self) -> int: # type: ignore
+        """Make list empty and return end(L)."""
+
+    def first(self) -> int: # type: ignore
+        """Return the first position if nonempty, else end()."""
+
+    def printlist(self) -> None:
+        """Print the elements of L in the order of occurrence."""

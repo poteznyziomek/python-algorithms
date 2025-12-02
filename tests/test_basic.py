@@ -539,5 +539,38 @@ class ListDataStructure(unittest.TestCase):
         # Nonempty.
         self.assertEqual(basic.Array(elements=[1], maxlength=10).first(), 0)
 
+
+class SingleLinkedList(unittest.TestCase):
+
+    def setUp(self):
+        self.k: int = 10
+
+    def test_singly_linked_list_creation(self):
+        """Test creation under different arguments.
+        
+        + `elements` and `pointers` are optional arguments and both can
+        be of any type.
+        + If both supplied, the number of elements cannot exceed the
+        number of pointers, but the number of elements can be smaller
+        than the number of pointers, in which case the remaining
+        pointers are discarded.
+        + If pointers are not supplied, then they default to nonnegative
+        integers.
+        + The head value (or cargo or payload) is None. If the
+        head's `next` is None then the list is considered empty.
+        """
+        k = self.k
+        self.assertIsNone(basic.SLinkedList().head.nxt) # empty list
+        self.assertIsNotNone(basic.SLinkedList(elements=[1, 2, 3]).head.nxt)
+
+        array = basic.SLinkedList(elements=range(k))
+        node = array.head.nxt
+        for i in range(k):
+            assert node is not None
+            self.assertIsNotNone(node.element)
+            self.assertEqual(node.element, i)
+            node = node.nxt
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=0)
