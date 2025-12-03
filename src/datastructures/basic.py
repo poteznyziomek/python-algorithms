@@ -12,7 +12,7 @@ class List(ABC):
         - cursor implementation.
     """
     @abstractmethod
-    def end(self) -> int:
+    def end(self) -> Any:
         """Return the position following n in an n-element list."""
 
     @abstractmethod
@@ -267,7 +267,6 @@ class Node:
 class SLinkedList(List):
     """Pointer implementation of the abstract data type List."""
     head: Node
-    tail: Node | None
     def __init__(self, elements: Sequence[Any] | None = None):
         """Singly-linked list.
         
@@ -285,19 +284,19 @@ class SLinkedList(List):
         ai for i = 1, 2, ..., n. Position 0 is a pointer to the head,
         and position end() is a pointer to the last cell.
         """
+        self.head = Node(None, None)
         if elements:
-            self.tail = self.make_list(len(elements), elements)
-        else:
-            self.tail = None
-        self.head = Node(None, self.tail)
-
+            next_node = self.head
+            for element in elements:
+                next_node.nxt = Node(element=element, nxt=None)
+                next_node = next_node.nxt
     
-    def make_list(self, x: int, L: Sequence[Any]) -> Node | None:
-        return Node(L[-x], self.make_list(x-1, L)) if 0 < x <= len(L) else None
-
-
-    def end(self) -> int: # type: ignore
-        """Return the position following n in an n-element list."""
+    def end(self) -> Node:
+        """Return a pointer to the last cell."""
+        node = self.head
+        while node.nxt is not None:
+            node = node.nxt
+        return node
 
     def insert(self, x: Any, p: int) -> None:
         """Insert x at position p

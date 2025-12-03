@@ -543,7 +543,7 @@ class ListDataStructure(unittest.TestCase):
 class SingleLinkedList(unittest.TestCase):
 
     def setUp(self):
-        self.k: int = 10
+        self.k: int = 1000
 
     def test_singly_linked_list_creation(self):
         """Test creation under different arguments.
@@ -570,7 +570,51 @@ class SingleLinkedList(unittest.TestCase):
             self.assertIsNotNone(node.element)
             self.assertEqual(node.element, i)
             node = node.nxt
+    
+    def test_singly_linked_list_end(self):
+        """This method should return a pointer to the last cell.
+        
+        The position, say i (0 < i <= n), is considered a pointer to
+        the cell holding the pointer to the i-th element. Position 0 is
+        a pointer to the head, and position end() is a pointer to the
+        cell:
+        [ | ] -> [a0 | ]  -> ... -> [a{i-1} | ] -> [ai | ] -> ... -> [an | .]
+        ^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        head                 list
+        The second field (after the pipe `|` symbol) in the head [ | ]
+        is a pointer to the cell containing the element a0, which means
+        it is the position one. The second field in the cell
+        [a{i-1} | ] is a pointer to the cell containing the element ai,
+        which means that it is the position i. The second field in the
+        cell [a{n-1} | ] (not visible in the diagram) is a pointer to
+        the cell containing the element an (which is the last element
+        on the list), which means it is the position end().
 
+        In the following tests we want to get the pointer, call it i, so
+        that i.nxt.element == end().nxt.element == the last element of
+        the list.
+        Equivalently end() is the second to last node, so we cant test
+        for equality end().nxt.nxt == None (a pointer to None uniquely
+        signifies the last element) and for all i (0 <= i < end()) we
+        have i.nxt.nxt != None.
+
+        For the empty list end() should return Node(None, None).
+        """
+        k = self.k
+        sll = basic.SLinkedList(range(k)) # (k-1)th cell points to the last
+        node = sll.head
+        for i in range(k+1):
+            if i < k:
+                assert node is not None
+                self.assertIsNotNone(node.nxt)
+            else:
+                assert node is not None
+                self.assertIsNone(node.nxt)
+                self.assertEqual(node, sll.end())
+            node = node.nxt
+        
+        # If the list is empty, end() should return None.
+        self.assertEqual(basic.SLinkedList().end(), basic.Node())
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)
