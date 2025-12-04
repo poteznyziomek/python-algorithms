@@ -548,16 +548,9 @@ class SingleLinkedList(unittest.TestCase):
     def test_singly_linked_list_creation(self):
         """Test creation under different arguments.
         
-        + `elements` and `pointers` are optional arguments and both can
-        be of any type.
-        + If both supplied, the number of elements cannot exceed the
-        number of pointers, but the number of elements can be smaller
-        than the number of pointers, in which case the remaining
-        pointers are discarded.
-        + If pointers are not supplied, then they default to nonnegative
-        integers.
-        + The head value (or cargo or payload) is None. If the
-        head's `next` is None then the list is considered empty.
+        + `elements` is a sequence-type optional parameter.
+        + The `head`'s value (or cargo or payload) is None. If the
+        `head`'s `next` is None then the list is considered empty.
         """
         k = self.k
         self.assertIsNone(basic.SLinkedList().head.nxt) # empty list
@@ -599,22 +592,47 @@ class SingleLinkedList(unittest.TestCase):
         have i.nxt.nxt != None.
 
         For the empty list end() should return Node(None, None).
+
+        NEVERMIND. This implementation is simply not feasible. Consider
+        the following alternatives:
+        1. With each cell [ai | ] associate an integer i, where
+        0 <= i <= n. The `head` is associated with -1. For a list in the
+        diagram above, the `end` method returns n+1.
+        2. Position i is associated with the cell [a{i-1} | ] (per the
+        description in the book) for i such that 0 < i <= n. The `end`
+        method returns n+1 which is associated with the last cell
+        [an | . ] (this does not seem right).
+
+        We follow with the 1st implementation.
         """
         k = self.k
-        sll = basic.SLinkedList(range(k)) # (k-1)th cell points to the last
-        node = sll.head
-        for i in range(k+1):
-            if i < k:
-                assert node is not None
-                self.assertIsNotNone(node.nxt)
-            else:
-                assert node is not None
-                self.assertIsNone(node.nxt)
-                self.assertEqual(node, sll.end())
-            node = node.nxt
+        #sll = basic.SLinkedList(range(k)) # (k-1)th cell points to the last
+        #node = sll.head
+        #for i in range(k+1):
+        #    if i < k:
+        #        assert node is not None
+        #        self.assertIsNotNone(node.nxt)
+        #    else:
+        #        assert node is not None
+        #        self.assertIsNone(node.nxt)
+        #        self.assertEqual(node, sll.end())
+        #    node = node.nxt
         
-        # If the list is empty, end() should return None.
-        self.assertEqual(basic.SLinkedList().end(), basic.Node())
+        ## If the list is empty, end() should return None.
+        #self.assertEqual(basic.SLinkedList().end(), basic.Node())
+
+        for i in range(k):
+            # make an i-element list, assert that end() == i+1
+            self.assertEqual(
+                basic.SLinkedList(elements=range(i)).end(), i
+            )
+        self.assertEqual(basic.SLinkedList().end(), 0)
+    
+    @unittest.skip("On hold.")
+    def test_singly_linked_list_insert(self):
+        """The `insert` method should insert new element at position p.
+        
+        Recalling that"""
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)

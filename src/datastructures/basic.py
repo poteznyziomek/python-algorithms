@@ -291,15 +291,21 @@ class SLinkedList(List):
                 next_node.nxt = Node(element=element, nxt=None)
                 next_node = next_node.nxt
     
-    def end(self) -> Node:
+    def end(self) -> int:
         """Return a pointer to the last cell."""
-        node = self.head
+        #node = self.head
+        #while node.nxt is not None:
+        #    node = node.nxt
+        #return node
+        node, i = self.head, -1
         while node.nxt is not None:
+            i += 1
             node = node.nxt
-        return node
+        return i+1
+            
 
     def insert(self, x: Any, p: int) -> None:
-        """Insert x at position p
+        """Insert x at position p.
 
         Insert moves elements at p and following positions to the next
         higher position. If p is end(), then x is appended to the end.
