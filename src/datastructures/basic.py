@@ -17,7 +17,7 @@ class List(ABC):
 
     @abstractmethod
     def insert(self, x: Any, p: int) -> None:
-        """Insert x at position p
+        """Insert x at position p.
 
         Insert moves elements at p and following positions to the next
         higher position. If p is end(), then x is appended to the end.
@@ -311,6 +311,17 @@ class SLinkedList(List):
         higher position. If p is end(), then x is appended to the end.
         If there is no position p, then raise IndexError.
         """
+        if 0 <= p <= self.end():
+            node, i = self.head, 0
+            while i < p:
+                assert node is not None
+                node = node.nxt
+                i += 1
+            assert node is not None
+            temp = node
+            node.nxt = Node(element=x, nxt=temp.nxt)
+        else:
+            raise IndexError("Position out of range.")
 
     def locate(self, x: Any) -> int: # type: ignore
         """Return the position of x.

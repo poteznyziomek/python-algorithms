@@ -628,11 +628,60 @@ class SingleLinkedList(unittest.TestCase):
             )
         self.assertEqual(basic.SLinkedList().end(), 0)
     
-    @unittest.skip("On hold.")
     def test_singly_linked_list_insert(self):
         """The `insert` method should insert new element at position p.
         
-        Recalling that"""
+        If the list is empty, then the new element can only be appended
+        at the end().
+        Valid positions p for insertion: 0 <= p <= end().
+        p = 0: [|] -> [ap | ] - > [a0 | ] -> [a1 | ] -> ... -> [an | .],
+        p = 1: [|] -> [a0 | ] - > [ap | ] -> [a1 | ] -> ... -> [an | .],
+        ...
+        p = i: [|] -> [a0 | ]  -> ... -> [a{i-1} | ] -> [ap | ] -> [ai | ] - >  ... -> [an | .],
+        ...
+        p = end(): [|] -> [a0 | ] - > ... -> [an | .] -> [ap | ],
+        where ap = x is the value of the new element.
+        """
+        elements = [
+            1, 3, 1, 1, 0, 2, 8, 7, 7, 7, 1,
+            4, 6, 0, 5, 9, 9, 0, 5, 2, 3
+        ]
+        new = -999
+        k = self.k
+        # 1. Put new at i (0 <= i <= len(elements)) position in a linked
+        # list.
+        # 2. Put new at the same position in a deep copy of elements.
+        # 3. Assert that the lists are equal.
+        for i in range(len(elements)+1):
+            linked_list = basic.SLinkedList(elements=elements)
+            elements_copy = copy.deepcopy(elements)
+            linked_list.insert(x=new, p=i)
+            elements_copy.insert(i, new)
+            node = linked_list.head.nxt
+            assert node is not None
+            for j in range(len(elements_copy)):
+                self.assertEqual(
+                    elements_copy[j],
+                    node.element
+                )
+                node = node.nxt
+        # Inserting into the empty list is valid only for p = 0.
+        for i in range(-k,k+1):
+            if i == 0:
+                linked_list = basic.SLinkedList()
+                linked_list.insert(x=new, p=i)
+                assert linked_list.head.nxt is not None
+                self.assertEqual(
+                    linked_list.head.nxt.element,
+                    new
+                )
+            else:
+                linked_list = basic.SLinkedList()
+                self.assertRaises(
+                    IndexError,
+                    linked_list.insert, x=new, p=i
+                )
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)
