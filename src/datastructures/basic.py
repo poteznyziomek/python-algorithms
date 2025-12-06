@@ -354,8 +354,22 @@ class SLinkedList(List):
         raise IndexError("Position is out of range.")
 
     
-    def delete(self, p: int) -> None: # type: ignore
-        """Delete the element at position p."""
+    def delete(self, p: int) -> None:
+        """Delete the element at position p.
+        
+        If p is invalid position, raise IndexError.
+        """
+        previous_node, i = self.head, 0
+        current_node = previous_node.nxt
+        while current_node is not None:
+            assert previous_node is not None
+            if i == p:
+                previous_node.nxt = current_node.nxt
+                return
+            i += 1
+            previous_node = previous_node.nxt
+            current_node = current_node.nxt
+        raise IndexError("Position out of range.")
     
     def next(self, p: int) -> int: # type: ignore
         """Return the position following position p.

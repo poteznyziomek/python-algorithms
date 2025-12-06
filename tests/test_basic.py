@@ -690,25 +690,28 @@ class SingleLinkedList(unittest.TestCase):
         If the sought element is not present, end() is returned.
         """
         k = self.k
+        linked_list = basic.SLinkedList(elements=range(0,-k,-1))
         for i in range(k):
             self.assertEqual(
-                basic.SLinkedList(elements=range(0,-k,-1)).locate(x=-i), i
+                linked_list.locate(x=-i), i
             )
         
         # Not on a list.
         sought_elements = [-111*i for i in range(1,k)]
+        linked_list = basic.SLinkedList(elements=range(k))
+        linked_list_end = linked_list.end()
         for i in range(k-1):
             self.assertEqual(
-                basic.SLinkedList(elements=range(k))
-                    .locate(x=sought_elements[i]),
-                basic.SLinkedList(elements=range(k)).end()
+                linked_list.locate(x=sought_elements[i]),
+                linked_list_end
             )
         
         # Empty list.
+        linked_list_empty = basic.SLinkedList()
         for i in range(-k,k):
-            self.assertEqual(basic.SLinkedList().locate(x=i), 0)
+            self.assertEqual(linked_list_empty.locate(x=i), 0)
     
-    def test_sinlgy_linked_list_retrieve(self):
+    def test_singly_linked_list_retrieve(self):
         """The `retrieve` method should return the value at position p.
         
         If the position p is out of range, the IndexError should be
@@ -738,6 +741,45 @@ class SingleLinkedList(unittest.TestCase):
             self.assertRaises(
                 IndexError,
                 linked_list_empty.retrieve,
+                p=i
+            )
+    
+    def test_singly_linked_list_delete(self):
+        """The `delete` method should remove the element at position p.
+        
+        If the position p is out of range, raise IndexError.
+        """
+        # 1. Create a k-element list [0, 1, ..., k-1].
+        # 2. Delete element at position i for i = k-1, k-2, ..., 0.
+        # 3. Confirm that the list is empty.
+        k = self.k
+        elements = [i for i in range(k)]
+        linked_list = basic.SLinkedList(elements=elements)
+        for i in range(k):
+            elements.pop()
+            linked_list.delete(p=k-1-i)
+            node, j = linked_list.head.nxt, 0
+            while node is not None:
+                self.assertEqual(node.element, elements[j])
+                node = node.nxt
+                j += 1
+        self.assertEqual(linked_list.head, basic.Node(None, None))
+
+        # Invalid positions.
+        linked_list = basic.SLinkedList(elements=range(k))
+        for i in set(range(-k,0)) | set(range(k, 2*k+1)):
+            self.assertRaises(
+                IndexError,
+                linked_list.delete,
+                p=i
+            )
+        
+        # Empty list.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k+1):
+            self.assertRaises(
+                IndexError,
+                linked_list_empty.delete,
                 p=i
             )
 
