@@ -19,9 +19,9 @@ explore popular algorithms in depth.
 ## Summary
 
 The package consists of two modules `datastructures` and `algorithms`. The
-former has a `basic` submodule in which an array implementation of the List
-abstract data type (ADT) is given. The `algorithms` module is currently under
-an overhaul.
+former has a `basic` submodule in which the array implementation and the
+singly-linked list implementation of the List abstract data type (ADT) is
+given. The `algorithms` module is currently under an overhaul.
 
 Additionally more theoretical notes are under preparation, which can be
 treated as a companion to this package.
