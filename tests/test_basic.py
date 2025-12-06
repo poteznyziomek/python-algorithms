@@ -782,6 +782,37 @@ class SingleLinkedList(unittest.TestCase):
                 linked_list_empty.delete,
                 p=i
             )
+    
+    def test_singly_linked_list_next(self):
+        """The `next` method should return p+1 for a given p.
+        
+        Valid positions p are these such that -1 <= p <= n, where n is
+        the position of the last element on the list. If p is not a
+        valid position, the IndexError exception should be raised.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(k))
+        
+        # In range.
+        for i in range(-1,k):
+            self.assertEqual(linked_list.next(p=i), i+1)
+
+        # Out of range.
+        for i in set(range(-k,-1)) | set(range(k,2*k+1)):
+            self.assertRaises(
+                IndexError,
+                linked_list.next,
+                p=i
+            )
+        
+        # For the empty list the only valid position is -1, which yields
+        # 0.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k+1):
+            if i == -1:
+                self.assertEqual(linked_list_empty.next(p=i), 0)
+            else:
+                self.assertRaises(IndexError, linked_list_empty.next, p=i)
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)

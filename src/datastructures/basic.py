@@ -359,7 +359,8 @@ class SLinkedList(List):
         
         If p is invalid position, raise IndexError.
         """
-        previous_node, i = self.head, 0
+        i = 0
+        previous_node = self.head
         current_node = previous_node.nxt
         while current_node is not None:
             assert previous_node is not None
@@ -371,18 +372,26 @@ class SLinkedList(List):
             current_node = current_node.nxt
         raise IndexError("Position out of range.")
     
-    def next(self, p: int) -> int: # type: ignore
+    def next(self, p: int) -> int:
         """Return the position following position p.
 
         If p is the last position, then return end().
         Raise IndexError if p is out of range.
         """
+        node, i = self.head, -1
+        while node is not None:
+            if i == p:
+                return i + 1
+            i += 1
+            node = node.nxt
+        raise IndexError("Position out of range.")
     
     def previous(self, p: int) -> int: # type: ignore
         """Return the position preceding position p.
         
         Raise IndexError if p < 1 or p > end().
         """
+
     
     def makenull(self) -> int: # type: ignore
         """Make list empty and return end(L)."""
