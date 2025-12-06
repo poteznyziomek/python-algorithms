@@ -707,6 +707,39 @@ class SingleLinkedList(unittest.TestCase):
         # Empty list.
         for i in range(-k,k):
             self.assertEqual(basic.SLinkedList().locate(x=i), 0)
+    
+    def test_sinlgy_linked_list_retrieve(self):
+        """The `retrieve` method should return the value at position p.
+        
+        If the position p is out of range, the IndexError should be
+        raised.
+        """
+        k = self.k
+        # In range.
+        linked_list = basic.SLinkedList(elements=range(0,-k,-1))
+        for i in range(k):
+            self.assertEqual(
+                linked_list.retrieve(p=i),
+                -i
+            )
+        
+        # Out of range.
+        linked_list = basic.SLinkedList(elements=range(k))
+        for i in set(range(-k,0)) | set(range(k,2*k+1)):
+            self.assertRaises(
+                IndexError,
+                linked_list.retrieve,
+                p=i
+            )
+        
+        # Empty list.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k+1):
+            self.assertRaises(
+                IndexError,
+                linked_list_empty.retrieve,
+                p=i
+            )
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)

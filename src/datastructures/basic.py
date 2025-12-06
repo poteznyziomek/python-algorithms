@@ -337,14 +337,22 @@ class SLinkedList(List):
                 return i
             i += 1
             node = node.nxt
-        return i#+ 1
+        return i
 
     
-    def retrieve(self, p: int) -> Any: # type: ignore
+    def retrieve(self, p: int) -> Any:
         """Return the element at position p.
         
         If p is out of range, then raise IndexError.
         """
+        node, i = self.head.nxt, 0
+        while node is not None:
+            if i == p:
+                return node.element
+            i += 1
+            node = node.nxt
+        raise IndexError("Position is out of range.")
+
     
     def delete(self, p: int) -> None: # type: ignore
         """Delete the element at position p."""
