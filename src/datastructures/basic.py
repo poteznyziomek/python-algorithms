@@ -386,12 +386,22 @@ class SLinkedList(List):
             node = node.nxt
         raise IndexError("Position out of range.")
     
-    def previous(self, p: int) -> int: # type: ignore
+    def previous(self, p: int) -> int:
         """Return the position preceding position p.
         
         Raise IndexError if p < 1 or p > end().
         """
-
+        if p < 1:
+            raise IndexError
+        else:
+            i = -1
+            node = self.head
+        while node is not None:
+            i += 1
+            node = node.nxt
+            if i == p:
+                return i - 1
+        raise IndexError("Position out of range.")
     
     def makenull(self) -> int: # type: ignore
         """Make list empty and return end(L)."""

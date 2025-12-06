@@ -813,6 +813,27 @@ class SingleLinkedList(unittest.TestCase):
                 self.assertEqual(linked_list_empty.next(p=i), 0)
             else:
                 self.assertRaises(IndexError, linked_list_empty.next, p=i)
+    
+    def test_singly_linked_list_previous(self):
+        """The `previous` method returnes the p-1 for a given position p.
+        
+        If p is not in range, the method should raise IndexError.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(k))
+
+        # In range.
+        for i in range(1,k+1):
+            self.assertEqual(linked_list.previous(p=i), i-1)
+        
+        # Out of range.
+        for i in set(range(-k,1)) | set(range(k+1,2*k+3)):
+            self.assertRaises(IndexError, linked_list.previous, p=i)
+
+        # Empty list.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k+1):
+            self.assertRaises(IndexError, linked_list_empty.previous, p=i)
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)
