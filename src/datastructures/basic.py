@@ -403,8 +403,11 @@ class SLinkedList(List):
                 return i - 1
         raise IndexError("Position out of range.")
     
-    def makenull(self) -> int: # type: ignore
+    def makenull(self) -> int:
         """Make list empty and return end(L)."""
+        end = self.end()
+        self.head = Node()
+        return end
 
     def first(self) -> int: # type: ignore
         """Return the first position if nonempty, else end()."""

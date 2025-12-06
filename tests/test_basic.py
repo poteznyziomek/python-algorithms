@@ -835,5 +835,17 @@ class SingleLinkedList(unittest.TestCase):
         for i in range(-k,k+1):
             self.assertRaises(IndexError, linked_list_empty.previous, p=i)
 
+    def test_singly_linked_list_makenull(self):
+        """The `makenull` method should make the head equal to Node().
+        
+        It should also return end().
+        For the empty list this method should be a no-op.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(k))
+        result = linked_list.makenull()
+        self.assertEqual(linked_list.head, basic.Node())
+        self.assertEqual(result, k)
+
 if __name__ == "__main__":
     unittest.main(verbosity=0)
