@@ -8,7 +8,12 @@ class ListDataStructure(unittest.TestCase):
         self.k: int = 10
     
     def test_array_creation(self):
-        """Invalid array creation should raise exception."""
+        """Invalid array creation should raise exception.
+        
+        The `elements` parameter should be a Sequence type to allow
+        for calling `len` and accessing elements through indices in the
+        array methods.
+        """
         elements = [0, 5, 7, 7, 2, 1, 5, 6, 6, 4, 9, 0, 1, 5, 3, 2]
         k = self.k
 
@@ -16,7 +21,7 @@ class ListDataStructure(unittest.TestCase):
         # elements default to the empty list, last defaults to -1,
         # maxlength defaults to 0
         self.assertIsInstance(basic.Array(), basic.Array)
-        self.assertListEqual(basic.Array().elements, list())
+        self.assertSequenceEqual(basic.Array().elements, list())
         self.assertEqual(basic.Array().last, -1)
         self.assertEqual(basic.Array().maxlength, 0)
 
@@ -25,7 +30,7 @@ class ListDataStructure(unittest.TestCase):
         # last defaults to len(elements)-1,
         # maxlength defaults to len(elements)
         elements=[2, 6, 8, 5, 4, 5, 2, 0]
-        self.assertListEqual(basic.Array(elements=elements).elements,
+        self.assertSequenceEqual(basic.Array(elements=elements).elements,
                              elements)
         self.assertEqual(basic.Array(elements=elements).last, len(elements)-1)
         self.assertEqual(basic.Array(elements=elements).maxlength,
@@ -39,7 +44,7 @@ class ListDataStructure(unittest.TestCase):
         for i in range(-10,11):
             if i < 0:
                 self.assertIsInstance(basic.Array(last=i), basic.Array)
-                self.assertListEqual(basic.Array(last=i).elements, list())
+                self.assertSequenceEqual(basic.Array(last=i).elements, list())
                 self.assertEqual(basic.Array(last=i).last, -1)
                 self.assertEqual(basic.Array(last=i).maxlength, 0)
             else:
@@ -64,7 +69,7 @@ class ListDataStructure(unittest.TestCase):
         # value.
         for i in range(-10, 11):
             if i < 0:
-                self.assertListEqual(
+                self.assertSequenceEqual(
                     basic.Array(elements=list(), last=i).elements,
                     list())
                 self.assertEqual(basic.Array(elements=list(), last=i).last, -1)
@@ -78,7 +83,7 @@ class ListDataStructure(unittest.TestCase):
                   | set(range(0,len(elements)))
                   | set(range(len(elements),len(elements)+k))):
             if i < 0:
-                self.assertListEqual(
+                self.assertSequenceEqual(
                     basic.Array(elements=elements, last=i).elements,
                     elements)
                 self.assertEqual(basic.Array(elements=elements, last=i).last,
@@ -87,7 +92,7 @@ class ListDataStructure(unittest.TestCase):
                     basic.Array(elements=elements, last=i).maxlength,
                     len(elements))
             elif 0 <= i < len(elements):
-                self.assertListEqual(
+                self.assertSequenceEqual(
                     basic.Array(elements=elements, last=i).elements,
                     elements)
                 self.assertEqual(
@@ -97,7 +102,7 @@ class ListDataStructure(unittest.TestCase):
                     basic.Array(elements=elements, last=i).maxlength,
                     len(elements))
             else:
-                self.assertListEqual(
+                self.assertSequenceEqual(
                     basic.Array(elements=elements, last=i).elements,
                     elements)
                 self.assertEqual(
@@ -120,7 +125,7 @@ class ListDataStructure(unittest.TestCase):
         for i in (set(range(len(elements)))
                   | set(range(len(elements),len(elements)+k))):
             if i <= len(elements):
-                self.assertListEqual(
+                self.assertSequenceEqual(
                     basic.Array(elements=elements, maxlength=i).elements,
                     elements)
             else:

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from collections.abc import Sequence
+from collections.abc import Sequence, MutableSequence
 from typing import Any
 from dataclasses import dataclass
 
@@ -75,12 +75,12 @@ class List(ABC):
 @dataclass
 class Array(List):
     """Array implementation of the abstract data type List."""
-    elements: list[Any]
+    elements: MutableSequence[Any]
     last: int
     maxlength: int
 
     def __init__(self,
-                 elements: list[Any] | None = None,
+                 elements: MutableSequence[Any] | None = None,
                  last: int | None = None,
                  maxlength: int | None = None) -> None:
 
@@ -133,7 +133,7 @@ class Array(List):
             if len(elements) >= maxlength:
                 self.elements = elements
             else:
-                self.elements = (elements
+                self.elements = (list(elements)
                     + [i for i in range(maxlength-len(elements))])
         elif ((elements is None or not elements)
               and last is not None and maxlength is not None):
@@ -167,7 +167,7 @@ class Array(List):
             if len(elements) >= maxlength:
                 self.elements = elements
             else:
-                self.elements = (elements
+                self.elements = (list(elements)
                     + [i for i in range(maxlength-len(elements))])
     
     def end(self) -> int:
