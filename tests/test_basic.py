@@ -846,6 +846,24 @@ class SingleLinkedList(unittest.TestCase):
         result = linked_list.makenull()
         self.assertEqual(linked_list.head, basic.Node())
         self.assertEqual(result, k)
+    
+    def test_singly_linked_list_first(self):
+        """The `first` method should return 0.
+        
+        If the list is empty it also returns 0.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(k))
+        self.assertEqual(linked_list.first(), 0)
+        self.assertEqual(basic.SLinkedList().first(), 0)
+    
+    @unittest.skip("Requires capturing the stdout. Another time.")
+    def test_singly_linked_list_printlist(self):
+        """The `printlist` should print the elements of the list.
+        
+        The elements should be printed in the order of occurrence.
+        """
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)

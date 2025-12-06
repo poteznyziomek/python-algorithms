@@ -409,8 +409,16 @@ class SLinkedList(List):
         self.head = Node()
         return end
 
-    def first(self) -> int: # type: ignore
+    def first(self) -> int:
         """Return the first position if nonempty, else end()."""
+        return 0
 
     def printlist(self) -> None:
         """Print the elements of L in the order of occurrence."""
+        node = self.head
+        if node.nxt is None:
+            print("[]")
+        else:
+            while node is not None:
+                print(node.element)
+                node = node.nxt
