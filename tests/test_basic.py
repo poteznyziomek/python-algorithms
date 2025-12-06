@@ -539,5 +539,331 @@ class ListDataStructure(unittest.TestCase):
         # Nonempty.
         self.assertEqual(basic.Array(elements=[1], maxlength=10).first(), 0)
 
+
+class SingleLinkedList(unittest.TestCase):
+
+    def setUp(self):
+        self.k: int = 1000
+
+    def test_singly_linked_list_creation(self):
+        """Test creation under different arguments.
+        
+        + `elements` is a sequence-type optional parameter.
+        + The `head`'s value (or cargo or payload) is None. If the
+        `head`'s `next` is None then the list is considered empty.
+        """
+        k = self.k
+        self.assertIsNone(basic.SLinkedList().head.nxt) # empty list
+        self.assertIsNotNone(basic.SLinkedList(elements=[1, 2, 3]).head.nxt)
+
+        array = basic.SLinkedList(elements=range(k))
+        node = array.head.nxt
+        for i in range(k):
+            assert node is not None
+            self.assertIsNotNone(node.element)
+            self.assertEqual(node.element, i)
+            node = node.nxt
+    
+    def test_singly_linked_list_end(self):
+        """This method should return a pointer to the last cell.
+        
+        The position, say i (0 < i <= n), is considered a pointer to
+        the cell holding the pointer to the i-th element. Position 0 is
+        a pointer to the head, and position end() is a pointer to the
+        cell:
+        [ | ] -> [a0 | ]  -> ... -> [a{i-1} | ] -> [ai | ] -> ... -> [an | .]
+        ^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        head                 list
+        The second field (after the pipe `|` symbol) in the head [ | ]
+        is a pointer to the cell containing the element a0, which means
+        it is the position one. The second field in the cell
+        [a{i-1} | ] is a pointer to the cell containing the element ai,
+        which means that it is the position i. The second field in the
+        cell [a{n-1} | ] (not visible in the diagram) is a pointer to
+        the cell containing the element an (which is the last element
+        on the list), which means it is the position end().
+
+        In the following tests we want to get the pointer, call it i, so
+        that i.nxt.element == end().nxt.element == the last element of
+        the list.
+        Equivalently end() is the second to last node, so we cant test
+        for equality end().nxt.nxt == None (a pointer to None uniquely
+        signifies the last element) and for all i (0 <= i < end()) we
+        have i.nxt.nxt != None.
+
+        For the empty list end() should return Node(None, None).
+
+        NEVERMIND. This implementation is simply not feasible. Consider
+        the following alternatives:
+        1. With each cell [ai | ] associate an integer i, where
+        0 <= i <= n. The `head` is associated with -1. For a list in the
+        diagram above, the `end` method returns n+1.
+        2. Position i is associated with the cell [a{i-1} | ] (per the
+        description in the book) for i such that 0 < i <= n. The `end`
+        method returns n+1 which is associated with the last cell
+        [an | . ] (this does not seem right).
+
+        We follow with the 1st implementation.
+        """
+        k = self.k
+        #sll = basic.SLinkedList(range(k)) # (k-1)th cell points to the last
+        #node = sll.head
+        #for i in range(k+1):
+        #    if i < k:
+        #        assert node is not None
+        #        self.assertIsNotNone(node.nxt)
+        #    else:
+        #        assert node is not None
+        #        self.assertIsNone(node.nxt)
+        #        self.assertEqual(node, sll.end())
+        #    node = node.nxt
+        
+        ## If the list is empty, end() should return None.
+        #self.assertEqual(basic.SLinkedList().end(), basic.Node())
+
+        for i in range(k):
+            # make an i-element list, assert that end() == i+1
+            self.assertEqual(
+                basic.SLinkedList(elements=range(i)).end(), i
+            )
+        self.assertEqual(basic.SLinkedList().end(), 0)
+    
+    def test_singly_linked_list_insert(self):
+        """The `insert` method should insert new element at position p.
+        
+        If the list is empty, then the new element can only be appended
+        at the end().
+        Valid positions p for insertion: 0 <= p <= end().
+        p = 0: [|] -> [ap | ] - > [a0 | ] -> [a1 | ] -> ... -> [an | .],
+        p = 1: [|] -> [a0 | ] - > [ap | ] -> [a1 | ] -> ... -> [an | .],
+        ...
+        p = i: [|] -> [a0 | ]  -> ... -> [a{i-1} | ] -> [ap | ] -> [ai | ] - >  ... -> [an | .],
+        ...
+        p = end(): [|] -> [a0 | ] - > ... -> [an | .] -> [ap | ],
+        where ap = x is the value of the new element.
+        """
+        elements = [
+            1, 3, 1, 1, 0, 2, 8, 7, 7, 7, 1,
+            4, 6, 0, 5, 9, 9, 0, 5, 2, 3
+        ]
+        new = -999
+        k = self.k
+        # 1. Put new at i (0 <= i <= len(elements)) position in a linked
+        # list.
+        # 2. Put new at the same position in a deep copy of elements.
+        # 3. Assert that the lists are equal.
+        for i in range(len(elements)+1):
+            linked_list = basic.SLinkedList(elements=elements)
+            elements_copy = copy.deepcopy(elements)
+            linked_list.insert(x=new, p=i)
+            elements_copy.insert(i, new)
+            node = linked_list.head.nxt
+            assert node is not None
+            for j in range(len(elements_copy)):
+                self.assertEqual(
+                    elements_copy[j],
+                    node.element
+                )
+                node = node.nxt
+        # Inserting into the empty list is valid only for p = 0.
+        for i in range(-k,k+1):
+            if i == 0:
+                linked_list = basic.SLinkedList()
+                linked_list.insert(x=new, p=i)
+                assert linked_list.head.nxt is not None
+                self.assertEqual(
+                    linked_list.head.nxt.element,
+                    new
+                )
+            else:
+                linked_list = basic.SLinkedList()
+                self.assertRaises(
+                    IndexError,
+                    linked_list.insert, x=new, p=i
+                )
+
+    def test_singly_linked_list_locate(self):
+        """The `locate` method should return the position of an element.
+        
+        If the sought element appears more than once, the position of
+        the first occurence is returned.
+        If the sought element is not present, end() is returned.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(0,-k,-1))
+        for i in range(k):
+            self.assertEqual(
+                linked_list.locate(x=-i), i
+            )
+        
+        # Not on a list.
+        sought_elements = [-111*i for i in range(1,k)]
+        linked_list = basic.SLinkedList(elements=range(k))
+        linked_list_end = linked_list.end()
+        for i in range(k-1):
+            self.assertEqual(
+                linked_list.locate(x=sought_elements[i]),
+                linked_list_end
+            )
+        
+        # Empty list.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k):
+            self.assertEqual(linked_list_empty.locate(x=i), 0)
+    
+    def test_singly_linked_list_retrieve(self):
+        """The `retrieve` method should return the value at position p.
+        
+        If the position p is out of range, the IndexError should be
+        raised.
+        """
+        k = self.k
+        # In range.
+        linked_list = basic.SLinkedList(elements=range(0,-k,-1))
+        for i in range(k):
+            self.assertEqual(
+                linked_list.retrieve(p=i),
+                -i
+            )
+        
+        # Out of range.
+        linked_list = basic.SLinkedList(elements=range(k))
+        for i in set(range(-k,0)) | set(range(k,2*k+1)):
+            self.assertRaises(
+                IndexError,
+                linked_list.retrieve,
+                p=i
+            )
+        
+        # Empty list.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k+1):
+            self.assertRaises(
+                IndexError,
+                linked_list_empty.retrieve,
+                p=i
+            )
+    
+    def test_singly_linked_list_delete(self):
+        """The `delete` method should remove the element at position p.
+        
+        If the position p is out of range, raise IndexError.
+        """
+        # 1. Create a k-element list [0, 1, ..., k-1].
+        # 2. Delete element at position i for i = k-1, k-2, ..., 0.
+        # 3. Confirm that the list is empty.
+        k = self.k
+        elements = [i for i in range(k)]
+        linked_list = basic.SLinkedList(elements=elements)
+        for i in range(k):
+            elements.pop()
+            linked_list.delete(p=k-1-i)
+            node, j = linked_list.head.nxt, 0
+            while node is not None:
+                self.assertEqual(node.element, elements[j])
+                node = node.nxt
+                j += 1
+        self.assertEqual(linked_list.head, basic.Node(None, None))
+
+        # Invalid positions.
+        linked_list = basic.SLinkedList(elements=range(k))
+        for i in set(range(-k,0)) | set(range(k, 2*k+1)):
+            self.assertRaises(
+                IndexError,
+                linked_list.delete,
+                p=i
+            )
+        
+        # Empty list.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k+1):
+            self.assertRaises(
+                IndexError,
+                linked_list_empty.delete,
+                p=i
+            )
+    
+    def test_singly_linked_list_next(self):
+        """The `next` method should return p+1 for a given p.
+        
+        Valid positions p are these such that -1 <= p <= n, where n is
+        the position of the last element on the list. If p is not a
+        valid position, the IndexError exception should be raised.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(k))
+        
+        # In range.
+        for i in range(-1,k):
+            self.assertEqual(linked_list.next(p=i), i+1)
+
+        # Out of range.
+        for i in set(range(-k,-1)) | set(range(k,2*k+1)):
+            self.assertRaises(
+                IndexError,
+                linked_list.next,
+                p=i
+            )
+        
+        # For the empty list the only valid position is -1, which yields
+        # 0.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k+1):
+            if i == -1:
+                self.assertEqual(linked_list_empty.next(p=i), 0)
+            else:
+                self.assertRaises(IndexError, linked_list_empty.next, p=i)
+    
+    def test_singly_linked_list_previous(self):
+        """The `previous` method returnes the p-1 for a given position p.
+        
+        If p is not in range, the method should raise IndexError.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(k))
+
+        # In range.
+        for i in range(1,k+1):
+            self.assertEqual(linked_list.previous(p=i), i-1)
+        
+        # Out of range.
+        for i in set(range(-k,1)) | set(range(k+1,2*k+3)):
+            self.assertRaises(IndexError, linked_list.previous, p=i)
+
+        # Empty list.
+        linked_list_empty = basic.SLinkedList()
+        for i in range(-k,k+1):
+            self.assertRaises(IndexError, linked_list_empty.previous, p=i)
+
+    def test_singly_linked_list_makenull(self):
+        """The `makenull` method should make the head equal to Node().
+        
+        It should also return end().
+        For the empty list this method should be a no-op.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(k))
+        result = linked_list.makenull()
+        self.assertEqual(linked_list.head, basic.Node())
+        self.assertEqual(result, k)
+    
+    def test_singly_linked_list_first(self):
+        """The `first` method should return 0.
+        
+        If the list is empty it also returns 0.
+        """
+        k = self.k
+        linked_list = basic.SLinkedList(elements=range(k))
+        self.assertEqual(linked_list.first(), 0)
+        self.assertEqual(basic.SLinkedList().first(), 0)
+    
+    @unittest.skip("Requires capturing the stdout. Another time.")
+    def test_singly_linked_list_printlist(self):
+        """The `printlist` should print the elements of the list.
+        
+        The elements should be printed in the order of occurrence.
+        """
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=0)

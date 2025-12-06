@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from typing import Any
 from dataclasses import dataclass
 
@@ -11,12 +12,12 @@ class List(ABC):
         - cursor implementation.
     """
     @abstractmethod
-    def end(self) -> int:
+    def end(self) -> Any:
         """Return the position following n in an n-element list."""
 
     @abstractmethod
     def insert(self, x: Any, p: int) -> None:
-        """Insert x at position p
+        """Insert x at position p.
 
         Insert moves elements at p and following positions to the next
         higher position. If p is end(), then x is appended to the end.
@@ -149,7 +150,6 @@ class Array(List):
             self.elements = list(range(maxlength))
 
         else: # each argument is supplied
-        #elif elements is not None and last is not None and maxlength is not None:
             assert (elements is not None
                     and last is not None
                     and maxlength is not None)
@@ -163,8 +163,6 @@ class Array(List):
             elif 0 <= last < len(elements):
                 self.last = last
             else:
-#                raise ValueError(f"`last` cannot exceed {len(elements)-1}, " \
-#                                 f"but {last=} supplied.")
                 self.last = len(elements) - 1
             if len(elements) >= maxlength:
                 self.elements = elements
@@ -258,3 +256,169 @@ class Array(List):
     def printlist(self) -> None:
         """Print the elements of L in the order of occurrence."""
         print(self.elements[:self.last+1])
+
+@dataclass
+class Node:
+    element: Any | None = None
+    nxt: Any | None = None
+
+
+@dataclass
+class SLinkedList(List):
+    """Pointer implementation of the abstract data type List."""
+    head: Node
+    def __init__(self, elements: Sequence[Any] | None = None):
+        """Singly-linked list.
+        
+        [ | ] -> [a0 | ] -> [a1 | ] -> ... -> [an | .]
+        ^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        head                 list
+        The list is made up of cells, each cell consisting of an element
+        of the list and a pointer to the next cell on the list. The cell
+        [ai | ] holding the element ai has a pointer (in the field
+        after the pipe `|` character) to the cell holding a{i+1} for
+        i = 0, 2, ..., n-1. The cell [an | .] holding an has a None
+        pointer. The `head` cell [ | ] points to the cell holding a0;
+        the head holds no element.
+        The position i is a pointer to the cell holding the pointer to
+        ai for i = 1, 2, ..., n. Position 0 is a pointer to the head,
+        and position end() is a pointer to the last cell.
+        """
+        self.head = Node(None, None)
+        if elements:
+            next_node = self.head
+            for element in elements:
+                next_node.nxt = Node(element=element, nxt=None)
+                next_node = next_node.nxt
+    
+    def end(self) -> int:
+        """Return a pointer to the last cell."""
+        #node = self.head
+        #while node.nxt is not None:
+        #    node = node.nxt
+        #return node
+        node, i = self.head, -1
+        while node.nxt is not None:
+            i += 1
+            node = node.nxt
+        return i+1
+            
+
+    def insert(self, x: Any, p: int) -> None:
+        """Insert x at position p.
+
+        Insert moves elements at p and following positions to the next
+        higher position. If p is end(), then x is appended to the end.
+        If there is no position p, then raise IndexError.
+        """
+        if 0 <= p <= self.end():
+            node, i = self.head, 0
+            while i < p:
+                assert node is not None
+                node = node.nxt
+                i += 1
+            assert node is not None
+            temp = node
+            node.nxt = Node(element=x, nxt=temp.nxt)
+        else:
+            raise IndexError("Position out of range.")
+
+    def locate(self, x: Any) -> int:
+        """Return the position of x.
+
+        If x appears more than once, then the position of the first
+        occurence is returned. If x does not appear at all, then end()
+        is returned.
+        """
+        node, i = self.head, -1
+        #while node.nxt is not None:
+        while node is not None:
+            if node.element == x:
+                return i
+            i += 1
+            node = node.nxt
+        return i
+
+    
+    def retrieve(self, p: int) -> Any:
+        """Return the element at position p.
+        
+        If p is out of range, then raise IndexError.
+        """
+        node, i = self.head.nxt, 0
+        while node is not None:
+            if i == p:
+                return node.element
+            i += 1
+            node = node.nxt
+        raise IndexError("Position is out of range.")
+
+    
+    def delete(self, p: int) -> None:
+        """Delete the element at position p.
+        
+        If p is invalid position, raise IndexError.
+        """
+        i = 0
+        previous_node = self.head
+        current_node = previous_node.nxt
+        while current_node is not None:
+            assert previous_node is not None
+            if i == p:
+                previous_node.nxt = current_node.nxt
+                return
+            i += 1
+            previous_node = previous_node.nxt
+            current_node = current_node.nxt
+        raise IndexError("Position out of range.")
+    
+    def next(self, p: int) -> int:
+        """Return the position following position p.
+
+        If p is the last position, then return end().
+        Raise IndexError if p is out of range.
+        """
+        node, i = self.head, -1
+        while node is not None:
+            if i == p:
+                return i + 1
+            i += 1
+            node = node.nxt
+        raise IndexError("Position out of range.")
+    
+    def previous(self, p: int) -> int:
+        """Return the position preceding position p.
+        
+        Raise IndexError if p < 1 or p > end().
+        """
+        if p < 1:
+            raise IndexError
+        else:
+            i = -1
+            node = self.head
+        while node is not None:
+            i += 1
+            node = node.nxt
+            if i == p:
+                return i - 1
+        raise IndexError("Position out of range.")
+    
+    def makenull(self) -> int:
+        """Make list empty and return end(L)."""
+        end = self.end()
+        self.head = Node()
+        return end
+
+    def first(self) -> int:
+        """Return the first position if nonempty, else end()."""
+        return 0
+
+    def printlist(self) -> None:
+        """Print the elements of L in the order of occurrence."""
+        node = self.head
+        if node.nxt is None:
+            print("[]")
+        else:
+            while node is not None:
+                print(node.element)
+                node = node.nxt
