@@ -323,13 +323,22 @@ class SLinkedList(List):
         else:
             raise IndexError("Position out of range.")
 
-    def locate(self, x: Any) -> int: # type: ignore
+    def locate(self, x: Any) -> int:
         """Return the position of x.
 
         If x appears more than once, then the position of the first
         occurence is returned. If x does not appear at all, then end()
         is returned.
         """
+        node, i = self.head, -1
+        #while node.nxt is not None:
+        while node is not None:
+            if node.element == x:
+                return i
+            i += 1
+            node = node.nxt
+        return i#+ 1
+
     
     def retrieve(self, p: int) -> Any: # type: ignore
         """Return the element at position p.

@@ -682,6 +682,31 @@ class SingleLinkedList(unittest.TestCase):
                     linked_list.insert, x=new, p=i
                 )
 
+    def test_singly_linked_list_locate(self):
+        """The `locate` method should return the position of an element.
+        
+        If the sought element appears more than once, the position of
+        the first occurence is returned.
+        If the sought element is not present, end() is returned.
+        """
+        k = self.k
+        for i in range(k):
+            self.assertEqual(
+                basic.SLinkedList(elements=range(0,-k,-1)).locate(x=-i), i
+            )
+        
+        # Not on a list.
+        sought_elements = [-111*i for i in range(1,k)]
+        for i in range(k-1):
+            self.assertEqual(
+                basic.SLinkedList(elements=range(k))
+                    .locate(x=sought_elements[i]),
+                basic.SLinkedList(elements=range(k)).end()
+            )
+        
+        # Empty list.
+        for i in range(-k,k):
+            self.assertEqual(basic.SLinkedList().locate(x=i), 0)
 
 if __name__ == "__main__":
     unittest.main(verbosity=0)
