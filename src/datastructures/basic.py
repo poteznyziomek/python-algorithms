@@ -83,7 +83,7 @@ class List(ABC):
 
 @dataclass
 class Array(List):
-    """Array implementation of the abstract data type List.
+    """Create an array.
 
     Useful when:
     + the number of elements is known not to exceed a certain
@@ -115,13 +115,13 @@ class Array(List):
 
     Notes
     -----
-    As already mentioned in the description, this data structure may be
-    favorable if frqeuent calls to `previous` and `end` methods are to
-    be made. Executing these methods requires constant time according to
-    their implementation. On the other hand `insert` and `delete`
-    require movement of elements, which is not constant in time, in
-    which case other implementations may be preferable.
-    This implementation is based on [1]_.
+    Array is an implementation of the abstract data type List defined in
+    [1]_. As already mentioned in the description, this data structure
+    may be favorable if frequent calls to `previous` and `end` methods
+    are to be made. Executing these methods requires constant time
+    according to their implementation. On the other hand `insert` and
+    `delete` require movement of elements, which is not constant in
+    time, in which case other implementations may be preferable.
 
     References
     ----------
@@ -450,32 +450,53 @@ class Array(List):
 
 @dataclass
 class Node:
+    """Create a node of a singly-linked list.
+
+    See Also
+    --------
+    SLinkedList : Create a singly-linked list.
+
+    Notes
+    -----
+    The Node simulates the cell of a singly-linked list. The cell
+    consists of the value (payload, cargo) and a pointer to the next
+    cell.
+    """
     element: Any | None = None
     nxt: Any | None = None
 
 
 @dataclass
 class SLinkedList(List):
-    """Pointer implementation of the abstract data type List."""
+    """Create a singly-linked list.
+
+    Parameters
+    ----------
+    elements : Sequence[Any] of None, default None
+        The parameter `elements` is used to create the nodes of the
+        list.
+
+    Raises
+    ------
+    IndexError
+        When methods are called with invalid position argument.
+
+    Notes
+    -----
+    The benefits of using singly-linked lists over arrays are the
+    constant times of the insert and delete methods. But because this
+    implementation only tries to mimic the pointer implementation these
+    times are in fact not constant. This implementation, which is based
+    on [1]_, should be regarded as purely educational.
+
+    References
+    ----------
+    .. [1] Alfred V. Aho, John E. Hopcroft, Jeffrey D. Ullman, "Data
+    structures and algorithms", Addison-Wesley, 1983.
+    """
     head: Node
 
     def __init__(self, elements: Sequence[Any] | None = None):
-        """Singly-linked list.
-
-        [ | ] -> [a0 | ] -> [a1 | ] -> ... -> [an | .]
-        ^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        head                 list
-        The list is made up of cells, each cell consisting of an element
-        of the list and a pointer to the next cell on the list. The cell
-        [ai | ] holding the element ai has a pointer (in the field
-        after the pipe `|` character) to the cell holding a{i+1} for
-        i = 0, 2, ..., n-1. The cell [an | .] holding an has a None
-        pointer. The `head` cell [ | ] points to the cell holding a0;
-        the head holds no element.
-        The position i is a pointer to the cell holding the pointer to
-        ai for i = 1, 2, ..., n. Position 0 is a pointer to the head,
-        and position end() is a pointer to the last cell.
-        """
         self.head = Node(None, None)
         if elements:
             next_node = self.head
@@ -484,7 +505,14 @@ class SLinkedList(List):
                 next_node = next_node.nxt
 
     def end(self) -> int:
-        """Return a pointer to the last cell."""
+        """Return a pointer to the last cell.
+
+        Returns
+        -------
+        int
+            If the list is n-element and is indexed starting from 0,
+            then n-1 is returned.
+        """
         node, i = self.head, -1
         while node.nxt is not None:
             i += 1
@@ -492,11 +520,40 @@ class SLinkedList(List):
         return i+1
 
     def insert(self, x: Any, p: int) -> None:
-        """Insert x at position p.
+        """Insert new element at the given position.
 
-        Insert moves elements at p and following positions to the next
-        higher position. If p is end(), then x is appended to the end.
-        If there is no position p, then raise IndexError.
+        Parameters
+        ----------
+        x : Any
+            The new element to be inserted.
+        p : int
+            The position where `x` is to be inserted.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        IndexError
+            If the position `p` is invalid. It must be in the range
+            0 <= p <= n + 1, where n is the position of the last element
+            on the list.
+
+        Notes
+        -----
+        In [1]_ `p` is a pointer to a cell. With pointers the insertion
+        takes constant time as the cell with the new element is "wired
+        up" into the list without any movement of the subsequent
+        elements. Here we do not have the luxury of pointers so `p` is a
+        simple int. Thus before inserting we have to get a hold of the
+        `p`-th element through iterating, because the position of an
+        element is not stored anywhere.
+
+        References
+        ----------
+        .. [1] Alfred V. Aho, John E. Hopcroft, Jeffrey D. Ullman, "Data
+        structures and algorithms", Addison-Wesley, 1983.
         """
         if 0 <= p <= self.end():
             node, i = self.head, 0
@@ -511,11 +568,19 @@ class SLinkedList(List):
             raise IndexError("Position out of range.")
 
     def locate(self, x: Any) -> int:
-        """Return the position of x.
+        """Return the position of the given element.
 
-        If x appears more than once, then the position of the first
-        occurence is returned. If x does not appear at all, then end()
-        is returned.
+        Parameters
+        ----------
+        x : Any
+            The sought element.
+
+        Returns
+        -------
+        int
+            The position of the first occurence of `x`. If `x` is not
+            present, then n + 1 is returned, where n is the position of
+            the last element on the list.
         """
         node, i = self.head, -1
         while node is not None:
@@ -526,9 +591,23 @@ class SLinkedList(List):
         return i
 
     def retrieve(self, p: int) -> Any:
-        """Return the element at position p.
+        """Return the element at the given position.
 
-        If p is out of range, then raise IndexError.
+        Parameters
+        ----------
+        p : int
+
+        Returns
+        -------
+        Any
+            The element at position `p`.
+
+        Raises
+        ------
+        IndexError
+            If `p` is out of range. The parameter `p` must be in range
+            0 <= p <= n, where n is the position of the last element on
+            the list.
         """
         node, i = self.head.nxt, 0
         while node is not None:
@@ -539,9 +618,23 @@ class SLinkedList(List):
         raise IndexError("Position is out of range.")
 
     def delete(self, p: int) -> None:
-        """Delete the element at position p.
+        """Delete the element at the given position.
 
-        If p is invalid position, raise IndexError.
+        Parameters
+        ----------
+        p : int
+            The position of the element to be deleted.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        IndexError
+            If `p` is not a valid position. The parameter `p` must be in
+            range 0 <= p <= n, where n is the position of the last
+            element on the list.
         """
         i = 0
         previous_node = self.head
@@ -557,10 +650,24 @@ class SLinkedList(List):
         raise IndexError("Position out of range.")
 
     def next(self, p: int) -> int:
-        """Return the position following position p.
+        """Return the position following the given position.
 
-        If p is the last position, then return end().
-        Raise IndexError if p is out of range.
+        For a given `p` return `p` + 1.
+
+        Parameters
+        ----------
+        p : int
+
+        Returns
+        -------
+        int
+
+        Raises
+        ------
+        IndexError
+            If `p` is out of range. The parameter `p` must be in range
+            0 <= p <= n, where n is the position of the last element on
+            the list.
         """
         node, i = self.head, -1
         while node is not None:
@@ -571,9 +678,25 @@ class SLinkedList(List):
         raise IndexError("Position out of range.")
 
     def previous(self, p: int) -> int:
-        """Return the position preceding position p.
+        """Return the position preceding the given position.
 
-        Raise IndexError if p < 1 or p > end().
+        For a given `p` return `p` - 1.
+
+        Parameters
+        ----------
+        p : int
+
+        Returns
+        -------
+        int
+
+        Raises
+        ------
+        IndexError
+            If `p` is out of range. The parameter `p` must be in range
+            1 <= p <= n + 1, where n is the position of the last element
+            on the list. Also recall that singly-linked list is indexed
+            starting from 0.
         """
         if p < 1:
             raise IndexError
@@ -587,17 +710,37 @@ class SLinkedList(List):
         raise IndexError("Position out of range.")
 
     def makenull(self) -> int:
-        """Make list empty and return end(L)."""
+        """Empty the list.
+
+        Make the list empty and return n + 1, where n is the position of
+        the last element on the list.
+
+        Returns
+        -------
+        int
+        """
         end = self.end()
         self.head = Node()
         return end
 
     def first(self) -> int:
-        """Return the first position if nonempty, else end()."""
+        """Return the first position.
+
+        Return 0.
+
+        Returns
+        -------
+        int
+        """
         return 0
 
     def printlist(self) -> None:
-        """Print the elements of L in the order of occurrence."""
+        """Print the elements in the order of occurrence.
+
+        Returns
+        -------
+        None
+        """
         node = self.head
         if node.nxt is None:
             print("[]")
